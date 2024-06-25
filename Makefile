@@ -31,7 +31,7 @@ clean_tc:
 	${tc_dir}/*.spec \
 	release
 
-# run options for tetris and trivial compute
+# trivial compute run options
 run_tc: main
 run_tc_1440: main_1440
 run_tc_1080: main_1080
