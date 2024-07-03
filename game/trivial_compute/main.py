@@ -74,9 +74,6 @@ class Game:
                     elif i[4] == "Quit":
                         pg.quit()
                         sys.exit()
-        elif self.mode == "play":
-            # game interactive event logic
-            pass
 
     def check_resize(self, event):
         """

@@ -1,20 +1,10 @@
 curr_dir= ../..
 tc_dir= game/trivial_compute
+icon= assets/sprites/icons/icon.ico
 
 # auto-install the necessary packages
 setup_tc: ${tc_dir}/requirements.txt
 	pip install -r ${tc_dir}/requirements.txt
-
-# package all directory files for release
-release_tc:
-	@cd ${tc_dir}; \
-	pyinstaller -F --noconsole --windowed \
-	main.py; \
-	mkdir -p ${curr_dir}/release; \
-	cp -rf assets ${curr_dir}/release/; \
-	mv dist/main ${curr_dir}/release/; \
-	cd ${curr_dir}; zip -r tc.zip release/*; \
-	mv tc.zip release
 
 # run your release
 test_release_tc:
@@ -30,6 +20,16 @@ clean_tc:
 	${tc_dir}/build ${tc_dir}/dist \
 	${tc_dir}/*.spec \
 	release
+
+# package all directory files for release
+release_tc: clean_tc
+	@cd ${tc_dir}; \
+	pyinstaller main.py --onefile --name ByteBuddies --noconsole -i ${icon}; \
+	mkdir -p ${curr_dir}/release; \
+	cp -rf assets ${curr_dir}/release/; \
+	mv dist/ByteBuddies.app ${curr_dir}/release/; \
+	cd ${curr_dir}; zip -r tc.zip release/*; \
+	mv tc.zip release
 
 # trivial compute run options
 run_tc: main
