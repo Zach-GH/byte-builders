@@ -10,8 +10,13 @@ import pygame as pg # type: ignore # pylint: disable=unused-import
 import pygame.freetype as ft # type: ignore # pylint: disable=unused-import
 
 FPS = 60
-FIELD_COLOR = (255, 255, 255)
-MENU_BG_PATH = "assets/sprites/tc.png"
+MENU_COLOR =    (40, 40, 40)
+PLAY_COLOR =    (40, 40, 40)
+OPTIONS_COLOR = (40, 40, 40)
+ACHVM_COLOR =   (40, 40, 40)
+CREDITS_COLOR = (40, 40, 40)
+
+MENU_BG_PATH = "assets/sprites/game-show.png"
 
 TILE_SIZE = 90
 FIELD_SIZE = FIELD_W, FIELD_H = 9, 9

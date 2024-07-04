@@ -38,7 +38,7 @@ class Text:
 
 class Button:
     """
-    Button class to handle buttoin creation, rendering, and events.
+    Button class to handle button creation, rendering, and events.
     """
     def __init__(self, app, pos, size, text=''):
         self.app = app

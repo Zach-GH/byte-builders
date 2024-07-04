@@ -16,14 +16,14 @@ class Menu:
         self.app = app
         self.res = (self.x, self.y) = (self.app.app.x, self.app.app.y)
         self.bg_img = pg.image.load(MENU_BG_PATH)
-        self.text_list = [("t1", 150, "Trivial Compute", "black", "title"),
-                          ("t2", 80, "Team Byte-Builders", "black", "team")]
-        self.btn_list = [("b1", (255, 255, 0), 350, (0, 0, 0), 'Play'),
-                         ("b2", (255, 0, 0), 350, (0, 0, 0), 'Options'),
-                         ("b3", (255, 0, 0), 350, (0, 0, 0), 'Mute'),
-                         ("b4", (255, 0, 0), 350, (0, 0, 0), 'Achievements'),
-                         ("b5", (0, 255, 0), 350, (0, 0, 0), 'Credits'),
-                         ("b6", (0, 255, 0), 350, (0, 0, 0), 'Quit')]
+        self.text_list = [("t1", 150, "Trivial Compute", "white", "title"),
+                          ("t2", 80, "Team Byte-Builders", "white", "team")]
+        self.btn_list = [("b1", (54, 57, 63), 350, (255, 255, 255), 'Play'),
+                         ("b2", (54, 57, 63), 350, (255, 255, 255), 'Options'),
+                         ("b3", (54, 57, 63), 350, (255, 255, 255), 'Mute'),
+                         ("b4", (54, 57, 63), 350, (255, 255, 255), 'Achievements'),
+                         ("b5", (54, 57, 63), 350, (255, 255, 255), 'Credits'),
+                         ("b6", (54, 57, 63), 350, (255, 255, 255), 'Quit')]
 
         # Create the buttons on the main menu
         j = 0

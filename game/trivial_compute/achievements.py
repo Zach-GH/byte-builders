@@ -1,6 +1,6 @@
 """
 Zachary Meisner
-gameboard.py
+achievements.py
 
 Add module docstring here
 """
@@ -8,15 +8,15 @@ Add module docstring here
 from settings import pg, FIELD_W, FIELD_H, TILE_SIZE, BTN_W_LOC, BTN_W, BTN_H
 from components import Button, Text
 
-class GameBoard:
+class Achievements:
     """
-    GameBoard class to handle the game board UI and interactions.
+    Achievements class to handle the achievements UI and interactions.
     """
     def __init__(self, app):
         self.app = app
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
-        self.text_list = [("t1", 150, "Game", "white", "title")]
+        self.text_list = [("t1", 150, "Achievements", "white", "title")]
         self.btn_list = [("b1", (54, 57, 63), 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
@@ -26,19 +26,6 @@ class GameBoard:
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
-    def draw_grid(self):
-        """
-        Draw the game grid.
-        """
-        center_x = (self.x - (FIELD_W * TILE_SIZE)) / 2
-        center_y = (self.y - (FIELD_H * TILE_SIZE)) / 2
-
-        for x in range(FIELD_W):
-            for y in range(FIELD_H):
-                pg.draw.rect(self.win, 'black', (center_x + x * TILE_SIZE,
-                                                 center_y + y * TILE_SIZE,
-                                                 TILE_SIZE, TILE_SIZE), 2)
-
     def set_button_position(self, button_name, x, y):
         """
         Set the position of a button dynamically.
@@ -46,9 +33,9 @@ class GameBoard:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_gameboard_ui(self):
+    def draw_achvm_ui(self):
         """
-        Draw the game board UI, including text and buttons.
+        Draw the achievements UI, including text and buttons.
         """
         for i in self.text_list:
             text = getattr(self, i[0])
@@ -61,11 +48,10 @@ class GameBoard:
 
         self.set_button_position("b1", 50, 50)
 
-        self.draw_grid()
 
     def update(self):
         """
-        Update the game board.
+        Update the Achievements menu.
         """
         mouse_pos = pg.mouse.get_pos()
         mouse_click = pg.mouse.get_pressed()
@@ -86,4 +72,4 @@ class GameBoard:
         """
         Add function docstring here.
         """
-        self.draw_gameboard_ui()
+        self.draw_achvm_ui()

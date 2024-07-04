@@ -11,9 +11,13 @@ file in addition to the trivial_compute.py file which will house core logic.
 """
 
 import sys
-from settings import pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS, FIELD_COLOR
+from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
+                        MENU_COLOR, PLAY_COLOR, OPTIONS_COLOR, ACHVM_COLOR, CREDITS_COLOR)
 from gameboard import GameBoard
 from menu import Menu
+from options import Options
+from achievements import Achievements
+from end_credits import End_Credits
 
 resolution = MIN_WIN_RES
 res_mode = pg.FULLSCREEN
@@ -52,6 +56,9 @@ class Game:
         self.menu = Menu(self)
         self.scale = pg.transform.scale(self.menu.bg_img, self.app.res)
         self.gameboard = GameBoard(self)
+        self.options = Options(self)
+        self.achvm = Achievements(self)
+        self.end_credits = End_Credits(self)
 
     def check_menu_events(self, pos):
         """
@@ -64,13 +71,13 @@ class Game:
                     if i[4] == "Play":
                         self.mode = "play"
                     elif i[4] == "Options":
-                        print(f"{i[4]} was clicked!")
+                        self.mode = "options"
                     elif i[4] == "Mute":
                         print(f"{i[4]} was clicked!")
                     elif i[4] == "Achievements":
-                        print(f"{i[4]} was clicked!")
+                        self.mode = "achvm"
                     elif i[4] == "Credits":
-                        print(f"{i[4]} was clicked!")
+                        self.mode = "credits"
                     elif i[4] == "Quit":
                         pg.quit()
                         sys.exit()
@@ -107,6 +114,12 @@ class App:
             self.game.menu.update()
         elif self.game.mode == "play":
             self.game.gameboard.update()
+        elif self.game.mode == "options":
+            self.game.options.update()
+        elif self.game.mode == "achvm":
+            self.game.achvm.update()
+        elif self.game.mode == "credits":
+            self.game.end_credits.update()
         self.clock.tick(FPS)
 
     def draw(self):
@@ -114,15 +127,27 @@ class App:
         Add function docstring here.
         """
         if self.game.mode == "menu":
-            self.screen.fill(color=FIELD_COLOR)
+            self.screen.fill(color=MENU_COLOR)
             self.game.menu.bg_img = self.game.scale
             # Menu background goes here image spans entire screen.
-            # self.screen.blit(self.menu.bg_img, (0, 0))
+            self.screen.blit(self.game.menu.bg_img, (0, 0))
             self.game.menu.draw()
             pg.display.flip()
         elif self.game.mode == "play":
-            self.screen.fill(color=FIELD_COLOR)
+            self.screen.fill(color=PLAY_COLOR)
             self.game.gameboard.draw()
+            pg.display.flip()
+        elif self.game.mode == "options":
+            self.screen.fill(color=OPTIONS_COLOR)
+            self.game.options.draw()
+            pg.display.flip()
+        elif self.game.mode == "achvm":
+            self.screen.fill(color=ACHVM_COLOR)
+            self.game.achvm.draw()
+            pg.display.flip()
+        elif self.game.mode == "credits":
+            self.screen.fill(color=CREDITS_COLOR)
+            self.game.end_credits.draw()
             pg.display.flip()
 
     def check_events(self):
