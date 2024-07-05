@@ -1,22 +1,22 @@
 """
 Zachary Meisner
-achievements.py
+team.py
 
 Add module docstring here
 """
 
-from settings import pg, FIELD_W, FIELD_H, TILE_SIZE, BTN_W_LOC, BTN_W, BTN_H
+from settings import pg, BTN_W_LOC, BTN_W, BTN_H
 from components import Button, Text
 
-class Achievements:
+class Team:
     """
-    Achievements class to handle the achievements UI and interactions.
+    Team class to handle the Team UI and interactions.
     """
     def __init__(self, app):
         self.app = app
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
-        self.text_list = [("t1", 150, "Achievements", "white", "title")]
+        self.text_list = [("t1", 150, "Team", "white", "title")]
         self.btn_list = [("b1", (54, 57, 63), 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
@@ -33,9 +33,9 @@ class Achievements:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_achvm_ui(self):
+    def draw_team_ui(self):
         """
-        Draw the achievements UI, including text and buttons.
+        Draw the Team UI, including text and buttons.
         """
         for i in self.text_list:
             text = getattr(self, i[0])
@@ -51,7 +51,7 @@ class Achievements:
 
     def update(self):
         """
-        Update the Achievements menu.
+        Update the Team menu.
         """
         mouse_pos = pg.mouse.get_pos()
         mouse_click = pg.mouse.get_pressed()
@@ -72,4 +72,4 @@ class Achievements:
         """
         Add function docstring here.
         """
-        self.draw_achvm_ui()
+        self.draw_team_ui()

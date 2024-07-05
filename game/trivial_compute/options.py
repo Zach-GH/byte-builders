@@ -5,7 +5,7 @@ options.py
 Add module docstring here
 """
 
-from settings import pg, FIELD_W, FIELD_H, TILE_SIZE, BTN_W_LOC, BTN_W, BTN_H
+from settings import pg, BTN_W_LOC, BTN_W, BTN_H
 from components import Button, Text
 
 class Options:

@@ -18,12 +18,12 @@ class Menu:
         self.bg_img = pg.image.load(MENU_BG_PATH)
         self.text_list = [("t1", 150, "Trivial Compute", "white", "title"),
                           ("t2", 80, "Team Byte-Builders", "white", "team")]
-        self.btn_list = [("b1", (54, 57, 63), 350, (255, 255, 255), 'Play'),
-                         ("b2", (54, 57, 63), 350, (255, 255, 255), 'Options'),
-                         ("b3", (54, 57, 63), 350, (255, 255, 255), 'Mute'),
-                         ("b4", (54, 57, 63), 350, (255, 255, 255), 'Achievements'),
-                         ("b5", (54, 57, 63), 350, (255, 255, 255), 'Credits'),
-                         ("b6", (54, 57, 63), 350, (255, 255, 255), 'Quit')]
+        self.btn_list = [("b1", (54, 57, 63), 200, (255, 255, 255), 'Play'),
+                         ("b2", (54, 57, 63), 200, (255, 255, 255), 'Options'),
+                         ("b3", (54, 57, 63), 200, (255, 255, 255), 'Mute'),
+                         ("b4", (54, 57, 63), 200, (255, 255, 255), 'Trophies'),
+                         ("b5", (54, 57, 63), 200, (255, 255, 255), 'Team'),
+                         ("b6", (54, 57, 63), 200, (255, 255, 255), 'Quit')]
 
         # Create the buttons on the main menu
         j = 0

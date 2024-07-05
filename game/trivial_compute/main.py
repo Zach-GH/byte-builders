@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Zachary Meisner
@@ -12,12 +12,13 @@ file in addition to the trivial_compute.py file which will house core logic.
 
 import sys
 from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
-                        MENU_COLOR, PLAY_COLOR, OPTIONS_COLOR, ACHVM_COLOR, CREDITS_COLOR)
+                          MENU_COLOR, PLAY_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
+                          TEAM_COLOR)
 from gameboard import GameBoard
 from menu import Menu
 from options import Options
-from achievements import Achievements
-from end_credits import End_Credits
+from trophies import Trophies
+from team import Team
 
 resolution = MIN_WIN_RES
 res_mode = pg.FULLSCREEN
@@ -53,20 +54,23 @@ class Game:
     def __init__(self, app):
         self.app = app
         self.mode = "menu"
-        self.menu = Menu(self)
-        self.scale = pg.transform.scale(self.menu.bg_img, self.app.res)
-        self.gameboard = GameBoard(self)
-        self.options = Options(self)
-        self.achvm = Achievements(self)
-        self.end_credits = End_Credits(self)
+        self.nav = {
+            'menu': Menu(self),
+            'gameboard': GameBoard(self),
+            'options': Options(self),
+            'trophies': Trophies(self),
+            'team': Team(self)
+        }
+        self.scale = pg.transform.scale(self.nav['menu'].bg_img,
+                                        self.app.res)
 
     def check_menu_events(self, pos):
         """
         Add function docstring here.
         """
         if self.mode == "menu":
-            for i in self.menu.btn_list:
-                button = getattr(self.menu, i[0])
+            for i in self.nav['menu'].btn_list:
+                button = getattr(self.nav['menu'], i[0])
                 if button.area.get_rect(topleft=button.pos).collidepoint(pos):
                     if i[4] == "Play":
                         self.mode = "play"
@@ -74,10 +78,10 @@ class Game:
                         self.mode = "options"
                     elif i[4] == "Mute":
                         print(f"{i[4]} was clicked!")
-                    elif i[4] == "Achievements":
-                        self.mode = "achvm"
-                    elif i[4] == "Credits":
-                        self.mode = "credits"
+                    elif i[4] == "Trophies":
+                        self.mode = "trophies"
+                    elif i[4] == "Team":
+                        self.mode = "team"
                     elif i[4] == "Quit":
                         pg.quit()
                         sys.exit()
@@ -87,8 +91,8 @@ class Game:
         Add function docstring here.
         """
         if self.mode == "menu":
-            self.scale = pg.transform.scale(self.menu.bg_img,
-                                            (event.w, event.h))
+            self.nav['scale'] = pg.transform.scale(self.nav['menu'].bg_img,
+                                                   (event.w, event.h))
         elif self.mode == "play":
             # sizable image background
             pass
@@ -111,15 +115,15 @@ class App:
         Add function docstring here.
         """
         if self.game.mode == "menu":
-            self.game.menu.update()
+            self.game.nav['menu'].update()
         elif self.game.mode == "play":
-            self.game.gameboard.update()
+            self.game.nav['gameboard'].update()
         elif self.game.mode == "options":
-            self.game.options.update()
-        elif self.game.mode == "achvm":
-            self.game.achvm.update()
-        elif self.game.mode == "credits":
-            self.game.end_credits.update()
+            self.game.nav['options'].update()
+        elif self.game.mode == "trophies":
+            self.game.nav['trophies'].update()
+        elif self.game.mode == "team":
+            self.game.nav['team'].update()
         self.clock.tick(FPS)
 
     def draw(self):
@@ -128,26 +132,26 @@ class App:
         """
         if self.game.mode == "menu":
             self.screen.fill(color=MENU_COLOR)
-            self.game.menu.bg_img = self.game.scale
+            self.game.nav['menu'].bg_img = self.game.scale
             # Menu background goes here image spans entire screen.
-            self.screen.blit(self.game.menu.bg_img, (0, 0))
-            self.game.menu.draw()
+            self.screen.blit(self.game.nav['menu'].bg_img, (0, 0))
+            self.game.nav['menu'].draw()
             pg.display.flip()
         elif self.game.mode == "play":
             self.screen.fill(color=PLAY_COLOR)
-            self.game.gameboard.draw()
+            self.game.nav['gameboard'].draw()
             pg.display.flip()
         elif self.game.mode == "options":
             self.screen.fill(color=OPTIONS_COLOR)
-            self.game.options.draw()
+            self.game.nav['options'].draw()
             pg.display.flip()
-        elif self.game.mode == "achvm":
-            self.screen.fill(color=ACHVM_COLOR)
-            self.game.achvm.draw()
+        elif self.game.mode == "trophies":
+            self.screen.fill(color=TROPHIES_COLOR)
+            self.game.nav['trophies'].draw()
             pg.display.flip()
-        elif self.game.mode == "credits":
-            self.screen.fill(color=CREDITS_COLOR)
-            self.game.end_credits.draw()
+        elif self.game.mode == "team":
+            self.screen.fill(color=TEAM_COLOR)
+            self.game.nav['team'].draw()
             pg.display.flip()
 
     def check_events(self):
@@ -165,6 +169,15 @@ class App:
             elif event.type == pg.VIDEORESIZE:
                 self.screen = pg.display.set_mode((event.w, event.h), res_mode)
                 self.game.check_resize(event)
+            elif event.type == pg.KEYDOWN and self.game.mode == "play":
+                if event.key == pg.K_LEFT:
+                    self.game.nav['gameboard'].move_player('LEFT')
+                elif event.key == pg.K_RIGHT:
+                    self.game.nav['gameboard'].move_player('RIGHT')
+                elif event.key == pg.K_UP:
+                    self.game.nav['gameboard'].move_player('UP')
+                elif event.key == pg.K_DOWN:
+                    self.game.nav['gameboard'].move_player('DOWN')
 
     def run(self):
         """

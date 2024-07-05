@@ -1,22 +1,22 @@
 """
 Zachary Meisner
-end_credits.py
+trophies.py
 
 Add module docstring here
 """
 
-from settings import pg, FIELD_W, FIELD_H, TILE_SIZE, BTN_W_LOC, BTN_W, BTN_H
+from settings import pg, BTN_W_LOC, BTN_W, BTN_H
 from components import Button, Text
 
-class End_Credits:
+class Trophies:
     """
-    End_Credits class to handle the end_credits UI and interactions.
+    Trophies class to handle the trophies UI and interactions.
     """
     def __init__(self, app):
         self.app = app
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
-        self.text_list = [("t1", 150, "Credits", "white", "title")]
+        self.text_list = [("t1", 150, "Trophies", "white", "title")]
         self.btn_list = [("b1", (54, 57, 63), 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
@@ -33,9 +33,9 @@ class End_Credits:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_end_credits_ui(self):
+    def draw_trophies_ui(self):
         """
-        Draw the end_credits UI, including text and buttons.
+        Draw the trophies UI, including text and buttons.
         """
         for i in self.text_list:
             text = getattr(self, i[0])
@@ -51,7 +51,7 @@ class End_Credits:
 
     def update(self):
         """
-        Update the End_Credits menu.
+        Update the Trophies menu.
         """
         mouse_pos = pg.mouse.get_pos()
         mouse_click = pg.mouse.get_pressed()
@@ -72,4 +72,4 @@ class End_Credits:
         """
         Add function docstring here.
         """
-        self.draw_end_credits_ui()
+        self.draw_trophies_ui()
