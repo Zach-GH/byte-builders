@@ -66,7 +66,7 @@ class Options:
         Handle button click events.
         """
         if button_text == 'Back':
-            self.app.mode = "menu"
+            self.app.display = "menu"
 
     def draw(self):
         """

@@ -17,8 +17,14 @@ TEAM_COLOR =     (40, 40, 40)
 OPTIONS_COLOR =  (40, 40, 40)
 TROPHIES_COLOR = (40, 40, 40)
 
+FPATH = os.path.join("assets", "font", "balmoral.ttf")
+FONT_PATH = os.path.realpath(FPATH)
+
 BG_PATH = os.path.join("assets", "sprites", "game-show.png")
 MENU_BG_PATH = os.path.realpath(BG_PATH)
+
+MPATH = os.path.join("assets", "sounds", "Trivial_Pursuit_CD_ROM_Edition_(1997_Soundtrack).mp3")
+MENU_MUSIC= os.path.realpath(MPATH)
 
 CELL_SIZE = 90
 GRID_SIZE = GRID_ROWS, GRID_COLS = 9, 9
@@ -38,6 +44,3 @@ MIN_WIN_RES = (MIN_WIN_W, MIN_WIN_H) = (1920, 1080)
 
 WIN_RES = (WIN_W, WIN_H) = (GRID_RES[0] * GRID_SCALE_W,
                             GRID_RES[1] * GRID_SCALE_H)
-
-FPATH = os.path.join("assets", "font", "balmoral.ttf")
-FONT_PATH = os.path.realpath(FPATH)

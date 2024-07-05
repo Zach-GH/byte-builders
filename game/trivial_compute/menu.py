@@ -5,8 +5,39 @@ menu.py
 Add module docstring here
 """
 
-from settings import pg, MENU_BG_PATH, BTN_W_LOC, BTN_W, BTN_H
+from settings import pg, MENU_BG_PATH, BTN_W_LOC, BTN_W, BTN_H, MENU_MUSIC
 from components import Button, Text
+
+class MenuBeats:
+    """
+    Add class docstring here.
+    """
+    def __init__(self, app):
+        self.app = app
+        self.music = MENU_MUSIC
+        self.fade_in = 5000
+
+        # Load music during initialization
+        pg.mixer.music.load(MENU_MUSIC)
+
+    def is_playing(self):
+        """
+        Add function docstring here.
+        """
+        return pg.mixer.music.get_busy()
+
+    def start_music(self):
+        """
+        Add function docstring here.
+        """
+        pg.mixer.music.play(-1, fade_ms=self.fade_in)
+
+    def stop_music(self):
+        """
+        Add function docstring here.
+        """
+        pg.mixer.music.stop()
+
 
 class Menu:
     """
@@ -16,6 +47,7 @@ class Menu:
         self.app = app
         self.res = (self.x, self.y) = (self.app.app.x, self.app.app.y)
         self.bg_img = pg.image.load(MENU_BG_PATH)
+        self.beats = MenuBeats(self)
         self.text_list = [("t1", 150, "Trivial Compute", "white", "title"),
                           ("t2", 80, "Team Byte-Builders", "white", "team")]
         self.btn_list = [("b1", (54, 57, 63), 200, (255, 255, 255), 'Play'),
@@ -24,6 +56,9 @@ class Menu:
                          ("b4", (54, 57, 63), 200, (255, 255, 255), 'Trophies'),
                          ("b5", (54, 57, 63), 200, (255, 255, 255), 'Team'),
                          ("b6", (54, 57, 63), 200, (255, 255, 255), 'Quit')]
+
+        if (self.app.mute == False):
+            self.beats.start_music()
 
         # Create the buttons on the main menu
         j = 0

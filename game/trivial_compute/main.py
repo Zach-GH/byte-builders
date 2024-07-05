@@ -21,7 +21,9 @@ from trophies import Trophies
 from team import Team
 
 resolution = MIN_WIN_RES
-res_mode = pg.FULLSCREEN
+res_type = pg.FULLSCREEN
+game_display = "menu"
+mute = False
 
 A = 1
 n = len(sys.argv)
@@ -35,15 +37,22 @@ while A < n:
         elif res == "min":
             resolution = MIN_WIN_RES
         A += 1
-    elif (sys.argv[A] == "-m" and A + 1 < n):
-        mode = sys.argv[A + 1].lower()
-        if mode == "full":
-            res_mode = pg.FULLSCREEN
-        elif mode == "sized":
-            res_mode = pg.RESIZABLE
-        elif mode == "windowed":
-            res_mode = pg.NOFRAME
+    elif (sys.argv[A] == "-t" and A + 1 < n):
+        type_ = sys.argv[A + 1].lower()
+        if type_ == "full":
+            res_type = pg.FULLSCREEN
+        elif type_ == "sized":
+            res_type = pg.RESIZABLE
+        elif type_ == "windowed":
+            res_type = pg.NOFRAME
         A += 1
+    elif (sys.argv[A] == "-d" and A + 1 < n):
+        display = sys.argv[A + 1].lower()
+        if display in ["menu", "gameboard", "options", "trophies", "team"]:
+            game_display = display
+        A += 1
+    elif (sys.argv[A] == "-m"):
+        mute = True
     A += 1
 
 
@@ -53,7 +62,8 @@ class Game:
     """
     def __init__(self, app):
         self.app = app
-        self.mode = "menu"
+        self.display = game_display
+        self.mute = mute
         self.nav = {
             'menu': Menu(self),
             'gameboard': GameBoard(self),
@@ -68,20 +78,27 @@ class Game:
         """
         Add function docstring here.
         """
-        if self.mode == "menu":
+        if self.display == "menu":
             for i in self.nav['menu'].btn_list:
                 button = getattr(self.nav['menu'], i[0])
                 if button.area.get_rect(topleft=button.pos).collidepoint(pos):
                     if i[4] == "Play":
-                        self.mode = "play"
+                        self.display = "gameboard"
                     elif i[4] == "Options":
-                        self.mode = "options"
+                        self.display = "options"
                     elif i[4] == "Mute":
-                        print(f"{i[4]} was clicked!")
+                        if self.mute == False:
+                            self.mute = True
+                        else:
+                            self.mute = False
+                        if self.nav['menu'].beats.is_playing() and self.mute == True:
+                            self.nav['menu'].beats.stop_music()
+                        elif not self.nav['menu'].beats.is_playing() and self.mute == False:
+                            self.nav['menu'].beats.start_music()
                     elif i[4] == "Trophies":
-                        self.mode = "trophies"
+                        self.display = "trophies"
                     elif i[4] == "Team":
-                        self.mode = "team"
+                        self.display = "team"
                     elif i[4] == "Quit":
                         pg.quit()
                         sys.exit()
@@ -90,12 +107,9 @@ class Game:
         """
         Add function docstring here.
         """
-        if self.mode == "menu":
+        if self.display == "menu":
             self.nav['scale'] = pg.transform.scale(self.nav['menu'].bg_img,
                                                    (event.w, event.h))
-        elif self.mode == "play":
-            # sizable image background
-            pass
 
 
 class App:
@@ -105,7 +119,7 @@ class App:
     def __init__(self):
         pg.init()
         pg.display.set_caption('Byte-Builders Trivial Compute')
-        self.screen = pg.display.set_mode(resolution, res_mode)
+        self.screen = pg.display.set_mode(resolution, res_type)
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
         self.game = Game(self)
@@ -114,15 +128,15 @@ class App:
         """
         Add function docstring here.
         """
-        if self.game.mode == "menu":
+        if self.game.display == "menu":
             self.game.nav['menu'].update()
-        elif self.game.mode == "play":
+        elif self.game.display == "gameboard":
             self.game.nav['gameboard'].update()
-        elif self.game.mode == "options":
+        elif self.game.display == "options":
             self.game.nav['options'].update()
-        elif self.game.mode == "trophies":
+        elif self.game.display == "trophies":
             self.game.nav['trophies'].update()
-        elif self.game.mode == "team":
+        elif self.game.display == "team":
             self.game.nav['team'].update()
         self.clock.tick(FPS)
 
@@ -130,26 +144,26 @@ class App:
         """
         Add function docstring here.
         """
-        if self.game.mode == "menu":
+        if self.game.display == "menu":
             self.screen.fill(color=MENU_COLOR)
             self.game.nav['menu'].bg_img = self.game.scale
             # Menu background goes here image spans entire screen.
             self.screen.blit(self.game.nav['menu'].bg_img, (0, 0))
             self.game.nav['menu'].draw()
             pg.display.flip()
-        elif self.game.mode == "play":
+        elif self.game.display == "gameboard":
             self.screen.fill(color=PLAY_COLOR)
             self.game.nav['gameboard'].draw()
             pg.display.flip()
-        elif self.game.mode == "options":
+        elif self.game.display == "options":
             self.screen.fill(color=OPTIONS_COLOR)
             self.game.nav['options'].draw()
             pg.display.flip()
-        elif self.game.mode == "trophies":
+        elif self.game.display == "trophies":
             self.screen.fill(color=TROPHIES_COLOR)
             self.game.nav['trophies'].draw()
             pg.display.flip()
-        elif self.game.mode == "team":
+        elif self.game.display == "team":
             self.screen.fill(color=TEAM_COLOR)
             self.game.nav['team'].draw()
             pg.display.flip()
@@ -167,9 +181,9 @@ class App:
                 pos = pg.mouse.get_pos()
                 self.game.check_menu_events(pos)
             elif event.type == pg.VIDEORESIZE:
-                self.screen = pg.display.set_mode((event.w, event.h), res_mode)
+                self.screen = pg.display.set_mode((event.w, event.h), res_type)
                 self.game.check_resize(event)
-            elif event.type == pg.KEYDOWN and self.game.mode == "play":
+            elif event.type == pg.KEYDOWN and self.game.display == "gameboard":
                 if event.key == pg.K_LEFT:
                     self.game.nav['gameboard'].move_player('LEFT')
                 elif event.key == pg.K_RIGHT:
