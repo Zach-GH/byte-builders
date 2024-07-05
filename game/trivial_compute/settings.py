@@ -8,6 +8,7 @@ values, resources, events, etc. that are needed by the game during runtime.
 
 import pygame as pg # type: ignore # pylint: disable=unused-import
 import pygame.freetype as ft # type: ignore # pylint: disable=unused-import
+import os
 
 FPS = 60
 MENU_COLOR =     (40, 40, 40)
@@ -16,7 +17,8 @@ TEAM_COLOR =     (40, 40, 40)
 OPTIONS_COLOR =  (40, 40, 40)
 TROPHIES_COLOR = (40, 40, 40)
 
-MENU_BG_PATH = "assets/sprites/game-show.png"
+BG_PATH = os.path.join("assets", "sprites", "game-show.png")
+MENU_BG_PATH = os.path.realpath(BG_PATH)
 
 CELL_SIZE = 90
 GRID_SIZE = GRID_ROWS, GRID_COLS = 9, 9
@@ -37,4 +39,5 @@ MIN_WIN_RES = (MIN_WIN_W, MIN_WIN_H) = (1920, 1080)
 WIN_RES = (WIN_W, WIN_H) = (GRID_RES[0] * GRID_SCALE_W,
                             GRID_RES[1] * GRID_SCALE_H)
 
-FONT_PATH = 'assets/font/balmoral.ttf'
+FPATH = os.path.join("assets", "font", "balmoral.ttf")
+FONT_PATH = os.path.realpath(FPATH)

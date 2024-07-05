@@ -33,17 +33,19 @@ release_tc: clean_tc
 
 # trivial compute run options
 run_tc: main
+run_win_tc: main_w
 run_tc_1440: main_1440
 run_tc_1080: main_1080
 
-main: ${tc_dir}/main.py
-	@cd ${tc_dir}; \
-	./$@.py -r max -m full;
+main:
+	@make main -C game/trivial_compute
 
-main_1440: ${tc_dir}/main.py
-	@cd ${tc_dir}; \
-	./main.py -r med -m sized;
+# windows option
+main_w:
+	@make main_w -C game\trivial_compute
 
-main_1080: ${tc_dir}/main.py
-	@cd ${tc_dir}; \
-	./main.py -r min -m windowed;
+main_1440:
+	@make main_1440 -C game/trivial_compute
+
+main_1080:
+	@make main_1080 -C game/trivial_compute
