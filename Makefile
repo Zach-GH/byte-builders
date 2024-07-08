@@ -37,6 +37,14 @@ run_win_tc: main_w
 run_tc_1440: main_1440
 run_tc_1080: main_1080
 
+# trivial compute run server
+run_tc_server: tc_server
+
+# multiplayer game
+run_mpg: mpg
+run_mpgs: mpgs
+run_mpgn: mpgn
+
 main:
 	@make main -C game/trivial_compute
 
@@ -49,3 +57,18 @@ main_1440:
 
 main_1080:
 	@make main_1080 -C game/trivial_compute
+
+tc_server:
+	@make tc_server -C game/trivial_compute
+
+mpg:
+	@make main -C game/multiplayer_game
+
+mpgs:
+	@make server -C game/multiplayer_game
+
+mpgn:
+	@make network -C game/multiplayer_game
+
+mpgc:
+	@make client -C game/multiplayer_game

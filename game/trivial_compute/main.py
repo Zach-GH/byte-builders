@@ -14,16 +14,18 @@ import sys
 from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
                           MENU_COLOR, PLAY_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
                           TEAM_COLOR)
-from gameboard import GameBoard
+from waiting_room import WaitingRoom
 from menu import Menu
 from options import Options
 from trophies import Trophies
 from team import Team
+from net.server import Server
 
 resolution = MIN_WIN_RES
 res_type = pg.FULLSCREEN
 game_display = "menu"
 mute = False
+server = False
 
 A = 1
 n = len(sys.argv)
@@ -48,11 +50,15 @@ while A < n:
         A += 1
     elif (sys.argv[A] == "-d" and A + 1 < n):
         display = sys.argv[A + 1].lower()
-        if display in ["menu", "gameboard", "options", "trophies", "team"]:
+        if display in ["menu", "waitingroom", "options", "trophies", "team"]:
             game_display = display
         A += 1
     elif (sys.argv[A] == "-m"):
         mute = True
+        A += 1
+    elif (sys.argv[A] == "-s"):
+        server = True
+        A += 1
     A += 1
 
 
@@ -66,7 +72,7 @@ class Game:
         self.mute = mute
         self.nav = {
             'menu': Menu(self),
-            'gameboard': GameBoard(self),
+            'waitingroom': WaitingRoom(self),
             'options': Options(self),
             'trophies': Trophies(self),
             'team': Team(self)
@@ -83,7 +89,7 @@ class Game:
                 button = getattr(self.nav['menu'], i[0])
                 if button.area.get_rect(topleft=button.pos).collidepoint(pos):
                     if i[4] == "Play":
-                        self.display = "gameboard"
+                        self.display = "waitingroom"
                     elif i[4] == "Options":
                         self.display = "options"
                     elif i[4] == "Mute":
@@ -130,8 +136,8 @@ class App:
         """
         if self.game.display == "menu":
             self.game.nav['menu'].update()
-        elif self.game.display == "gameboard":
-            self.game.nav['gameboard'].update()
+        elif self.game.display == "waitingroom":
+            self.game.nav['waitingroom'].update()
         elif self.game.display == "options":
             self.game.nav['options'].update()
         elif self.game.display == "trophies":
@@ -147,13 +153,12 @@ class App:
         if self.game.display == "menu":
             self.screen.fill(color=MENU_COLOR)
             self.game.nav['menu'].bg_img = self.game.scale
-            # Menu background goes here image spans entire screen.
             self.screen.blit(self.game.nav['menu'].bg_img, (0, 0))
             self.game.nav['menu'].draw()
             pg.display.flip()
-        elif self.game.display == "gameboard":
-            self.screen.fill(color=PLAY_COLOR)
-            self.game.nav['gameboard'].draw()
+        elif self.game.display == "waitingroom":
+            self.screen.fill(color=MENU_COLOR)
+            self.game.nav['waitingroom'].draw()
             pg.display.flip()
         elif self.game.display == "options":
             self.screen.fill(color=OPTIONS_COLOR)
@@ -178,20 +183,14 @@ class App:
                 pg.quit()
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONUP:
-                pos = pg.mouse.get_pos()
-                self.game.check_menu_events(pos)
+                if self.game.display == "waitingroom":
+                    self.game.nav['waitingroom'].allowUpdate()
+                else:
+                    pos = pg.mouse.get_pos()
+                    self.game.check_menu_events(pos)
             elif event.type == pg.VIDEORESIZE:
                 self.screen = pg.display.set_mode((event.w, event.h), res_type)
                 self.game.check_resize(event)
-            elif event.type == pg.KEYDOWN and self.game.display == "gameboard":
-                if event.key == pg.K_LEFT:
-                    self.game.nav['gameboard'].move_player('LEFT')
-                elif event.key == pg.K_RIGHT:
-                    self.game.nav['gameboard'].move_player('RIGHT')
-                elif event.key == pg.K_UP:
-                    self.game.nav['gameboard'].move_player('UP')
-                elif event.key == pg.K_DOWN:
-                    self.game.nav['gameboard'].move_player('DOWN')
 
     def run(self):
         """
@@ -202,6 +201,23 @@ class App:
             self.update()
             self.draw()
 
+
+class RunServer:
+    """
+    Add class docstring here.
+    """
+    def __init__(self):
+        self.server = Server(self)
+
+    def run(self):
+        print("Running Trivial Compute Server")
+        self.server.run()
+
+
 if __name__ == '__main__':
-    a = App()
-    a.run()
+    if (server == True):
+        s = RunServer()
+        s.run()
+    else:
+        a = App()
+        a.run()

@@ -16,8 +16,8 @@ class GameBoard:
     """
     def __init__(self, app):
         self.app = app
-        self.win = self.app.app.screen
-        self.x, self.y = (self.app.app.x, self.app.app.y)
+        self.win = self.app.win
+        self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.text_list = [("t1", 150, "Game", "white", "title")]
@@ -84,11 +84,11 @@ class GameBoard:
         Draw the gameboard UI, including text and buttons.
         """
 
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            button.draw(self.win, i[1], i[3])
+        # for i in self.btn_list:
+        #     button = getattr(self, i[0])
+        #     button.draw(self.win, i[1], i[3])
 
-        self.set_button_position("b1", 50, 50)
+        # self.set_button_position("b1", 50, 50)
 
         self.draw_grid()
         self.player.draw(self.center_x, self.center_y)
@@ -97,20 +97,22 @@ class GameBoard:
         """
         Update the gameboard.
         """
-        mouse_pos = pg.mouse.get_pos()
-        mouse_click = pg.mouse.get_pressed()
+        pass
+        # mouse_pos = pg.mouse.get_pos()
+        # mouse_click = pg.mouse.get_pressed()
 
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            if button.is_clicked(mouse_pos) and mouse_click[0]:
-                self.handle_button_click(i[4])
+        # for i in self.btn_list:
+        #     button = getattr(self, i[0])
+        #     if button.is_clicked(mouse_pos) and mouse_click[0]:
+        #         self.handle_button_click(i[4])
 
     def handle_button_click(self, button_text):
         """
         Handle button click events.
         """
-        if button_text == 'Back':
-            self.app.display = "menu"
+        pass
+        # if button_text == 'Back':
+        #     self.app.display = "menu"
 
     def draw(self):
         """
