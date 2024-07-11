@@ -65,6 +65,7 @@ class Team:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(mouse_pos) and mouse_click[0]:
+                button.was_clicked()
                 self.handle_button_click(i[3])
 
     def draw(self):

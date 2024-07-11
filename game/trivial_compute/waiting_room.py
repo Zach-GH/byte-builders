@@ -21,15 +21,15 @@ class WaitingRoom:
         self.x = self.app.app.x
         self.y = self.app.app.y
         self.gameboard = GameBoard(self)
-        self.server = Server(self)
+        self.s = Server(self)
         self.connected = False
         self.allowUpdate = False
         self.text_list = [
             ("t1", 150, "Click to Play!", "white", "click"),
-            ("t2", 150, "Waiting for other players", "white", "wait")]
+            ("t2", 150, f"Total Players Connected: {len(self.s.connected_players)}", "white", "tplayers")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back'),
                          ("b2", 150, (255, 255, 255), 'Connect'),
-                         ("b3", 150, (255, 255, 255), 'Start Game')]
+                         ("b3", 150, (255, 255, 255), f'Player Count: {self.s.pnum}')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -55,13 +55,14 @@ class WaitingRoom:
                     self.gameboard.move_player(player_num, 'UP')
                 elif event.key == pg.K_DOWN:
                     self.gameboard.move_player(player_num, 'DOWN')
+            elif event.type == pg.MOUSEBUTTONUP:
+                self.gameboard.check_gameboard_events()
 
     def draw_window(self, game, player_num):
         if not(game.connected()):
             pass
         else:
             self.connected = True
-            self.gameboard.update()
             self.screen.fill(color=PLAY_COLOR)
             self.gameboard.draw()
             pg.display.flip()
@@ -81,11 +82,10 @@ class WaitingRoom:
 
         for i in self.text_list:
             text = getattr(self, i[0])
-            # Figure out a way to switch the text based off of state
-            # so when the player clicks it displays one text or the other
             if i[4] == "click":
                 text.draw(self.screen, 1, 0)
-            elif i[4] == "wait":
+            elif i[4] == "tplayers":
+                text.update_text(f"Total Players Connected: {len(self.s.connected_players)}")
                 text.draw(self.screen, 1, 1)
 
         for i in self.btn_list:
@@ -93,8 +93,8 @@ class WaitingRoom:
             button.draw(self.screen, i[2])
 
         self.set_button_position("b1", 50, 50)
-        self.set_button_position("b2", 650, 600)
-        self.set_button_position("b3", 650, 700)
+        self.set_button_position("b2", 900, 650)
+        self.set_button_position("b3", 900, 300)
 
     def network_connection(self):
         running = True
@@ -130,7 +130,13 @@ class WaitingRoom:
             self.network_connection()
         else:
             pass
-        
+
+    def draw(self):
+        """
+        Add function docstring here.
+        """
+        self.draw_waitingroom_ui()
+
     def handle_button_click(self, pos):
         """
         Handle button click events.
@@ -138,18 +144,13 @@ class WaitingRoom:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
-                if i[3] == 'Back':
+                button.was_clicked()
+                if i[0] == 'b1':
                     self.app.display = "menu"
-                elif i[3] == 'Connect':
+                elif i[0] == 'b2':
                     print("Connecting!")
                     self.allowUpdate = True
-                    # t.Thread(target=self.network_connection).start()
-                elif i[3] == 'Start Game':
-                    print("Starting Game!")
-                    self.server.start_game()
-
-    def draw(self):
-        """
-        Add function docstring here.
-        """
-        self.draw_waitingroom_ui()
+                elif i[0] == 'b3':
+                    self.s.configure_player_count()
+                    button.update_text(f'Player Count: {self.s.pnum}')
+                    print(f"Player Count is now: {self.s.pnum}")

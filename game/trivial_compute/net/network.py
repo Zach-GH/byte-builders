@@ -5,10 +5,15 @@ class Network:
     def __init__(self, app):
         self.app = app
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.1.6" # same number as in server.py
-        self.port = 5555 # same port as server.py
+        self.server = self.get_local_ip()
+        self.port = 5555
         self.addr = (self.server, self.port)
         self.p = self.connect()
+
+    def get_local_ip(self):
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+        return local_ip
 
     def getP(self):
         return self.p

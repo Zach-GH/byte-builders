@@ -1,38 +1,29 @@
 """
-Madeline Gyllenhoff
-question_gui.py
+Steven Qian
+database.py
 
 Add module docstring here
 """
 
 import sys
-from settings import (pg, QGUI_RES, FPS, BTN_W_LOC, BTN_W, BTN_H, QGUI_COLOR,
-                      FUN)
+from settings import (pg, DGUI_RES, FPS, BTN_W_LOC, BTN_W, BTN_H, DGUI_COLOR)
 from components import Button, Text
-from beats import Beats
 
-resolution = QGUI_RES
+resolution = DGUI_RES
 res_type = pg.RESIZABLE
 
-def run_question_gui_instance():
-    pg.init()
-    screen = pg.display.set_mode(resolution, res_type)
-    pg.display.set_caption('Byte-Builders Question GUI')
-    question_gui = Question_Gui(screen)
-    question_gui.run()
-
-class Question_Gui:
+class Database:
     """
-    Question_Gui class to handle the question_gui UI and interactions.
+    Database class to handle the database UI and interactions.
     """
-    def __init__(self, screen=None):
+    def __init__(self, app, screen=None):
         pg.init()
-        pg.display.set_caption('Byte-Builders Question GUI')
-        self.beats = Beats(self, FUN, 0)
+        pg.display.set_caption('Byte-Builders Database')
+        self.app = app
         self.screen = screen or pg.display.set_mode(resolution, res_type)
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
-        self.text_list = [("t1", 150, "Question_Gui", "white", "title")]
+        self.text_list = [("t1", 150, "Database", "white", "title")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'The :) Button')]
 
         for i in self.btn_list:
@@ -41,13 +32,13 @@ class Question_Gui:
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            if i[0] == "b1":
+            if i[3] == "The :) Button":
                 button.update_size((50, 50))
         
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
-    def check_question_gui_events(self, pos):
+    def check_database_events(self, pos):
         """
         Add function docstring here.
         """
@@ -55,12 +46,8 @@ class Question_Gui:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
                 button.was_clicked()
-                if i[0] == "b1":
-                    print("Shrek 5 was confirmed the other day!")
-                    if self.beats.is_playing():
-                        pass
-                    else:
-                        self.beats.start_music()
+                if i[3] == "The :) Button":
+                    print("Database!")
 
     def check_events(self):
         """
@@ -72,8 +59,8 @@ class Question_Gui:
                 pg.quit()
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONUP:
-                pos = pg.mouse.get_pos()
-                self.check_question_gui_events(pos)
+                    pos = pg.mouse.get_pos()
+                    self.check_database_events(pos)
 
     def set_button_position(self, button_name, x, y):
         """
@@ -82,11 +69,11 @@ class Question_Gui:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_question_gui_ui(self):
+    def draw_database_ui(self):
         """
-        Draw the question_gui UI, including text and buttons.
+        Draw the database UI, including text and buttons.
         """
-        self.screen.fill(color=QGUI_COLOR)
+        self.screen.fill(color=DGUI_COLOR)
 
         for i in self.text_list:
             text = getattr(self, i[0])
@@ -111,7 +98,7 @@ class Question_Gui:
         """
         Add function docstring here.
         """
-        self.draw_question_gui_ui()
+        self.draw_database_ui()
 
     def run(self):
         """

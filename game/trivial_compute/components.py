@@ -5,7 +5,8 @@ components.py
 Add module docstring here
 """
 
-from settings import pg, ft, FONT_PATH
+from settings import pg, ft, FONT_PATH, CLICK
+from beats import Sound_Effect
 
 class Text:
     """
@@ -35,6 +36,12 @@ class Text:
         self.font.render_to(screen, (x, y), text=self.name,
                             fgcolor=self.color, size=self.size)
 
+    def update_text(self, new_text):
+        """
+        Update the text of the button.
+        """
+        self.name = new_text
+
 
 class Button:
     """
@@ -48,6 +55,7 @@ class Button:
         self.font = pg.font.Font(pg.font.get_default_font(), self.size[1])
         self.rect = pg.Rect(self.pos, self.size)
         self.area = pg.Surface(self.rect.size)
+        self.click_sound = Sound_Effect(self, CLICK)
 
     def render(self, text, text_color):
         """
@@ -75,6 +83,18 @@ class Button:
         Check if the button is clicked.
         """
         return self.rect.collidepoint(mouse_pos)
+
+    def was_clicked(self):
+        """
+        If the button was clicked, play the CLICK sound effect.
+        """
+        self.click_sound.play()
+
+    def update_text(self, new_text):
+        """
+        Update the text of the button.
+        """
+        self.text = new_text
 
     def update_position(self, new_pos):
         """

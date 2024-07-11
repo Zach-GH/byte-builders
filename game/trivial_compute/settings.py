@@ -17,6 +17,7 @@ TEAM_COLOR =     (40, 40, 40)
 OPTIONS_COLOR =  (40, 40, 40)
 TROPHIES_COLOR = (40, 40, 40)
 QGUI_COLOR =     (40, 40, 40)
+DGUI_COLOR =     (40, 40, 40)
 
 FPATH = os.path.join("assets", "font", "balmoral.ttf")
 FONT_PATH = os.path.realpath(FPATH)
@@ -54,6 +55,7 @@ MED_WIN_RES = (MED_WIN_W, MED_WIN_H) = (2560, 1440)
 MIN_WIN_RES = (MIN_WIN_W, MIN_WIN_H) = (1920, 1080)
 
 QGUI_RES = (MIN_WIN_W, MIN_WIN_H) = (600, 400)
+DGUI_RES = (MIN_WIN_W, MIN_WIN_H) = (1000, 1000)
 
 WIN_RES = (WIN_W, WIN_H) = (GRID_RES[0] * GRID_SCALE_W,
                             GRID_RES[1] * GRID_SCALE_H)

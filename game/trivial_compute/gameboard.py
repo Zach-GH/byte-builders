@@ -21,12 +21,13 @@ class GameBoard:
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.text_list = [("t1", 150, "Game", "white", "title")]
-        self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Question?')]
         self.grid = []
         self.player1 = Player(self.screen, (0, 0), (255, 0, 0))
         self.player2 = Player(self.screen, (8, 8), (0, 255, 0))
         self.player3 = Player(self.screen, (0, 8), (0, 0, 255))
         self.player4 = Player(self.screen, (8, 0), (255, 255, 0))
+        self.mouse_pressed = False
 
         self.init_grid()
 
@@ -37,6 +38,9 @@ class GameBoard:
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
+    def move_action(self):
+        print("Move action executed")
+
     def init_grid(self):
         for row in range(GRID_ROWS):
             row_list = []
@@ -44,16 +48,13 @@ class GameBoard:
                 cell = {
                     'id': f'{row}-{col}',
                     'color': GRID_COLOR,
-                    'action': self.default_action,
+                    'action': self.move_action,
                     'rect': pg.Rect(col * CELL_SIZE + self.center_x,
                                     row * CELL_SIZE + self.center_y,
                                     CELL_SIZE, CELL_SIZE)
                 }
                 row_list.append(cell)
             self.grid.append(row_list)
-
-    def default_action(self):
-        print("Default action executed")
 
     def draw_grid(self):
         """
@@ -117,25 +118,17 @@ class GameBoard:
         self.player3.draw(self.center_x, self.center_y)
         self.player4.draw(self.center_x, self.center_y)
 
-    def handle_button_click(self, button_text):
+    def check_gameboard_events(self):
         """
-        Handle button click events.
+        Add function docstring here.
         """
-        pass
-        if button_text == 'Back':
-            self.app.display = "menu"
-
-    def update(self):
-        """
-        Update the gameboard.
-        """
-        mouse_pos = pg.mouse.get_pos()
-        mouse_click = pg.mouse.get_pressed()
-
+        pos = pg.mouse.get_pos()
         for i in self.btn_list:
             button = getattr(self, i[0])
-            if button.is_clicked(mouse_pos) and mouse_click[0]:
-                self.handle_button_click(i[3])
+            if button.is_clicked(pos):
+                button.was_clicked()
+                if i[0] == "b1":
+                    self.app.app.app.run_question_gui()
 
     def draw(self):
         """

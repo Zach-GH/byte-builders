@@ -5,25 +5,28 @@ from game import Game
 
 connected = set()
 games = {}
-connected_players = []
-REQUIRED_PLAYERS = 4
 
 class Server:
     def __init__(self, app):
         self.app = app
-        # on mac to get local ethernet connection
-        # this command also is default for the Wi-Fi network adapter
-        # I used ipconfig getifaddr en0
-        self.server = "192.168.1.6"
+        self.server = self.get_local_ip()
         self.port = 5555
-        self.run_server = False
+        self.pnum = 1 # player num
+        self.connected_players = []
 
-    # a thread is just a process that is running in the background
-    # threads are important because we do not want the function to wait
-    # for something to happen before the program continues
-    # this is how multiplayer works because we want two people
-    # to be able to do things at one time
-    #
+    def get_local_ip(self):
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+        return local_ip
+
+    def configure_player_count(self):
+        if self.pnum < 4:
+            self.pnum += 1
+            print("pnum is", self.pnum)
+        else:
+            self.pnum = 1
+            print("pnum is", self.pnum)
+
     def threaded_client(self, conn, p, game_id):
         global games
 
@@ -60,9 +63,6 @@ class Server:
             pass
         conn.close()
 
-    def start_game(self):
-        self.run_server = True
-
     def run(self):
         global games
 
@@ -76,19 +76,19 @@ class Server:
             # print out why there is a connection problem
             str(e)
 
-        s.listen(4) # 4 for 4 players
+        s.listen()
         print("Waiting for a connection, Server Started")
 
         while True:
             # accept any incoming connections
             # and store the connection and ip address
             conn, addr = s.accept()
-            player_id = len(connected_players) + 1
+            player_id = len(self.connected_players) + 1
             print("Player Number: ", player_id, " has connected to: ", addr)
-            connected_players.append((conn, addr, player_id))
+            self.connected_players.append((conn, addr, player_id))
+            print("len(self.connected_players)", len(self.connected_players))
 
-            if len(connected_players) == REQUIRED_PLAYERS:
-            # if self.run_server == True:
+            if len(self.connected_players) == self.pnum:
                 game_id = len(games)
                 games[game_id] = Game(game_id)
                 print(f"Starting game {game_id}")
@@ -96,10 +96,10 @@ class Server:
                 # Mark game as ready and assign players
                 games[game_id].ready = True
 
-                for player in connected_players:
+                for player in self.connected_players:
                     conn, addr, player_id = player
                     start_new_thread(self.threaded_client,
                                      (conn, player_id, game_id))
 
                 # clear list for next games
-                connected_players.clear()
+                self.connected_players.clear()

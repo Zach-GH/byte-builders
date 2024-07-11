@@ -37,8 +37,16 @@ class Beats:
         """
         pg.mixer.music.stop()
 
-    def sound_effect(self):
+class Sound_Effect:
+    """
+    Add class docstring here.
+    """
+    def __init__(self, app, sound_file):
+        self.app = app
+        self.sound = pg.mixer.Sound(sound_file)
+
+    def play(self):
         """
         Add function docstring here.
         """
-        pg.mixer.music.play()
+        self.sound.play()

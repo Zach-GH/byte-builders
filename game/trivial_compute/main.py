@@ -11,15 +11,17 @@ file in addition to the trivial_compute.py file which will house core logic.
 """
 
 import sys
+import multiprocessing as mp
 from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
                           MENU_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
-                          TEAM_COLOR)
+                          TEAM_COLOR, QGUI_RES)
 from waiting_room import WaitingRoom
 from menu import Menu
 from options import Options
 from trophies import Trophies
 from team import Team
-from question_gui import Question_Gui
+from question_gui import Question_Gui, run_question_gui_instance
+from database import Database
 from net.server import Server
 
 resolution = MIN_WIN_RES
@@ -28,6 +30,7 @@ game_display = "menu"
 mute = False
 server = False
 q_gui = False
+q_database = False
 
 A = 1
 n = len(sys.argv)
@@ -64,6 +67,9 @@ while A < n:
     elif (sys.argv[A] == "-g"):
         q_gui = True
         A += 1
+    elif (sys.argv[A] == "-db"):
+        q_database = True
+        A += 1
     A += 1
 
 
@@ -93,6 +99,7 @@ class Game:
             for i in self.nav['menu'].btn_list:
                 button = getattr(self.nav['menu'], i[0])
                 if button.is_clicked(pos):
+                    button.was_clicked()
                     if i[3] == "Play":
                         self.display = "waitingroom"
                     elif i[3] == "Options":
@@ -136,6 +143,7 @@ class App:
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
         self.game = Game(self)
+        self.server = Server(self)
 
     def update(self):
         """
@@ -199,6 +207,27 @@ class App:
                 self.screen = pg.display.set_mode((event.w, event.h), res_type)
                 self.game.check_resize(event)
 
+    def run_external_gui(self, target, process_attribute):
+        current_process = getattr(self, process_attribute, None)
+        if current_process is None or not current_process.is_alive():
+            process = mp.Process(target=target)
+            process.start()
+            setattr(self, process_attribute, process)
+        else:
+            print("You can't open two windows!")
+
+    def run_server(self):
+        """
+        Add function docstring here.
+        """
+        self.run_external_gui(self.server.run, 'server_process')
+
+    def run_question_gui(self):
+        """
+        Add function docstring here.
+        """
+        self.run_external_gui(run_question_gui_instance, 'question_gui_process')
+
     def run(self):
         """
         Add function docstring here.
@@ -225,11 +254,23 @@ class Run_Question_Gui:
     Add class docstring here.
     """
     def __init__(self):
-        self.question_gui = Question_Gui(self)
+        screen = pg.display.set_mode(QGUI_RES, pg.RESIZABLE)
+        self.question_gui = Question_Gui(screen)
 
     def run(self):
         print("Running Trivial Compute Quesiton Gui")
         self.question_gui.run()
+
+class Run_Database:
+    """
+    Add class docstring here.
+    """
+    def __init__(self):
+        self.database = Database(self)
+
+    def run(self):
+        print("Running Trivial Compute Database")
+        self.database.run()
 
 if __name__ == '__main__':
     if (server == True):
@@ -238,6 +279,9 @@ if __name__ == '__main__':
     elif (q_gui == True):
         g = Run_Question_Gui()
         g.run()
+    elif (q_database == True):
+        d = Run_Database()
+        d.run()
     else:
         a = App()
         a.run()
