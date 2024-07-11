@@ -7,37 +7,7 @@ Add module docstring here
 
 from settings import pg, MENU_BG_PATH, BTN_W_LOC, BTN_W, BTN_H, MENU_MUSIC
 from components import Button, Text
-
-class MenuBeats:
-    """
-    Add class docstring here.
-    """
-    def __init__(self, app):
-        self.app = app
-        self.music = MENU_MUSIC
-        self.fade_in = 5000
-
-        # Load music during initialization
-        pg.mixer.music.load(MENU_MUSIC)
-
-    def is_playing(self):
-        """
-        Add function docstring here.
-        """
-        return pg.mixer.music.get_busy()
-
-    def start_music(self):
-        """
-        Add function docstring here.
-        """
-        pg.mixer.music.play(-1, fade_ms=self.fade_in)
-
-    def stop_music(self):
-        """
-        Add function docstring here.
-        """
-        pg.mixer.music.stop()
-
+from beats import Beats
 
 class Menu:
     """
@@ -45,9 +15,10 @@ class Menu:
     """
     def __init__(self, app):
         self.app = app
+        self.screen = self.app.app.screen
         self.res = (self.x, self.y) = (self.app.app.x, self.app.app.y)
         self.bg_img = pg.image.load(MENU_BG_PATH)
-        self.beats = MenuBeats(self)
+        self.beats = Beats(self, MENU_MUSIC, 5000)
         self.text_list = [("t1", 150, "Trivial Compute", "white", "title"),
                           ("t2", 80, "Team Byte-Builders", "white", "team")]
         self.btn_list = [("b1", 175, (255, 255, 255), 'Play'),
@@ -77,9 +48,9 @@ class Menu:
         for i in self.text_list:
             text = getattr(self, i[0])
             if i[4] == "title":
-                text.draw(1, 0)
+                text.draw(self.screen, 1, 0)
             elif i[4] == "team":
-                text.draw(1.9, 1.9)
+                text.draw(self.screen, 1.9, 1.9)
 
         for i in self.btn_list:
             button = getattr(self, i[0])

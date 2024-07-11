@@ -14,7 +14,7 @@ class Team:
     """
     def __init__(self, app):
         self.app = app
-        self.win = self.app.app.screen
+        self.screen = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
         self.text_list = [("t1", 150, "Team", "white", "title")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
@@ -40,11 +40,11 @@ class Team:
         for i in self.text_list:
             text = getattr(self, i[0])
             if i[4] == "title":
-                text.draw(1, 0)
+                text.draw(self.screen, 1, 0)
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            button.draw(self.win, i[2])
+            button.draw(self.screen, i[2])
 
         self.set_button_position("b1", 50, 50)
 

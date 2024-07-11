@@ -16,17 +16,17 @@ class GameBoard:
     """
     def __init__(self, app):
         self.app = app
-        self.win = self.app.win
+        self.screen = self.app.screen
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.text_list = [("t1", 150, "Game", "white", "title")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
         self.grid = []
-        self.player1 = Player(self.win, (0, 0), (255, 0, 0))
-        self.player2 = Player(self.win, (8, 8), (0, 255, 0))
-        self.player3 = Player(self.win, (0, 8), (0, 0, 255))
-        self.player4 = Player(self.win, (8, 0), (255, 255, 0))
+        self.player1 = Player(self.screen, (0, 0), (255, 0, 0))
+        self.player2 = Player(self.screen, (8, 8), (0, 255, 0))
+        self.player3 = Player(self.screen, (0, 8), (0, 0, 255))
+        self.player4 = Player(self.screen, (8, 0), (255, 255, 0))
 
         self.init_grid()
 
@@ -61,7 +61,7 @@ class GameBoard:
         """
         for row in self.grid:
             for cell in row:
-                pg.draw.rect(self.win, cell['color'], cell['rect'], 1)
+                pg.draw.rect(self.screen, cell['color'], cell['rect'], 1)
 
     def handle_player_move(self, player_num, player_pos):
         """
@@ -107,7 +107,7 @@ class GameBoard:
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            button.draw(self.win, i[2])
+            button.draw(self.screen, i[2])
 
         self.set_button_position("b1", 50, 50)
 

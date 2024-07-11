@@ -16,6 +16,7 @@ class Server:
         # I used ipconfig getifaddr en0
         self.server = "192.168.1.6"
         self.port = 5555
+        self.run_server = False
 
     # a thread is just a process that is running in the background
     # threads are important because we do not want the function to wait
@@ -59,6 +60,8 @@ class Server:
             pass
         conn.close()
 
+    def start_game(self):
+        self.run_server = True
 
     def run(self):
         global games
@@ -85,7 +88,7 @@ class Server:
             connected_players.append((conn, addr, player_id))
 
             if len(connected_players) == REQUIRED_PLAYERS:
-                # All required players are connected
+            # if self.run_server == True:
                 game_id = len(games)
                 games[game_id] = Game(game_id)
                 print(f"Starting game {game_id}")

@@ -85,14 +85,14 @@ class Game:
         self.scale = pg.transform.scale(self.nav['menu'].bg_img,
                                         self.app.res)
 
-    def check_menu_events(self, pos):
+    def check_action_events(self, pos):
         """
         Add function docstring here.
         """
         if self.display == "menu":
             for i in self.nav['menu'].btn_list:
                 button = getattr(self.nav['menu'], i[0])
-                if button.area.get_rect(topleft=button.pos).collidepoint(pos):
+                if button.is_clicked(pos):
                     if i[3] == "Play":
                         self.display = "waitingroom"
                     elif i[3] == "Options":
@@ -102,9 +102,11 @@ class Game:
                             self.mute = True
                         else:
                             self.mute = False
-                        if self.nav['menu'].beats.is_playing() and self.mute == True:
+                        if (self.nav['menu'].beats.is_playing()
+                            and self.mute == True):
                             self.nav['menu'].beats.stop_music()
-                        elif not self.nav['menu'].beats.is_playing() and self.mute == False:
+                        elif (not self.nav['menu'].beats.is_playing()
+                              and self.mute == False):
                             self.nav['menu'].beats.start_music()
                     elif i[3] == "Trophies":
                         self.display = "trophies"
@@ -188,11 +190,11 @@ class App:
                 pg.quit()
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONUP:
+                pos = pg.mouse.get_pos()
                 if self.game.display == "waitingroom":
-                    self.game.nav['waitingroom'].allowUpdate()
+                    self.game.nav['waitingroom'].handle_button_click(pos)
                 else:
-                    pos = pg.mouse.get_pos()
-                    self.game.check_menu_events(pos)
+                    self.game.check_action_events(pos)
             elif event.type == pg.VIDEORESIZE:
                 self.screen = pg.display.set_mode((event.w, event.h), res_type)
                 self.game.check_resize(event)
@@ -222,7 +224,6 @@ class Run_Question_Gui:
     """
     Add class docstring here.
     """
-
     def __init__(self):
         self.question_gui = Question_Gui(self)
 

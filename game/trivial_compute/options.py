@@ -14,6 +14,7 @@ class Options:
     """
     def __init__(self, app):
         self.app = app
+        self.screen = self.app.app.screen
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
         self.text_list = [("t1", 150, "Options", "white", "title")]
@@ -40,7 +41,7 @@ class Options:
         for i in self.text_list:
             text = getattr(self, i[0])
             if i[4] == "title":
-                text.draw(1, 0)
+                text.draw(self.screen, 1, 0)
 
         for i in self.btn_list:
             button = getattr(self, i[0])

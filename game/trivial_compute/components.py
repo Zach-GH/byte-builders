@@ -27,12 +27,12 @@ class Text:
         y = (self.app.y - self.rect.height) / 2 * off_y
         return x, y
 
-    def draw(self, offset_x, offset_y):
+    def draw(self, screen, offset_x, offset_y):
         """
         Add function docstring here.
         """
         x, y = self.render(offset_x, offset_y)
-        self.font.render_to(self.app.app.app.screen, (x, y), text=self.name,
+        self.font.render_to(screen, (x, y), text=self.name,
                             fgcolor=self.color, size=self.size)
 
 
@@ -46,8 +46,8 @@ class Button:
         self.size = size
         self.text = text
         self.font = pg.font.Font(pg.font.get_default_font(), self.size[1])
-        self.area = pg.Surface((self.size[0], self.size[1]))
         self.rect = pg.Rect(self.pos, self.size)
+        self.area = pg.Surface(self.rect.size)
 
     def render(self, text, text_color):
         """
@@ -65,6 +65,11 @@ class Button:
         text_y = self.pos[1] + (self.size[1] - text_area.get_height()) / 2
         win.blit(text_area, (text_x, text_y))
 
+        # Update rect to encompass the text area
+        self.rect.width = text_area.get_width()
+        self.rect.height = text_area.get_height()
+        self.rect.topleft = (text_x, text_y)
+
     def is_clicked(self, mouse_pos):
         """
         Check if the button is clicked.
@@ -76,4 +81,13 @@ class Button:
         Update the position of the button.
         """
         self.pos = new_pos
-        self.rect.topleft = self.pos
+
+    def update_size(self, new_size):
+        """
+        Update the size of the button.
+        """
+        self.size = new_size
+        self.rect.size = self.size
+        self.area = pg.Surface(self.rect.size)
+        self.font = pg.font.Font(pg.font.get_default_font(), self.size[1])
+

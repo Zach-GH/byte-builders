@@ -6,25 +6,30 @@ Add module docstring here
 """
 
 import sys
+import threading as t
 from settings import pg, PLAY_COLOR, BTN_W_LOC, BTN_W, BTN_H
 from net.network import Network
 from components import Button, Text
 from gameboard import GameBoard
+from net.server import Server
 
 class WaitingRoom:
     def __init__(self, app):
         self.app = app
         self.clock = self.app.app.clock
-        self.win = self.app.app.screen
+        self.screen = self.app.app.screen
         self.x = self.app.app.x
         self.y = self.app.app.y
         self.gameboard = GameBoard(self)
-        self.updateAllowed = False
+        self.server = Server(self)
         self.connected = False
+        self.allowUpdate = False
         self.text_list = [
             ("t1", 150, "Click to Play!", "white", "click"),
-            ("t2", 150, "Waiting for other player", "white", "wait")]
-        self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
+            ("t2", 150, "Waiting for other players", "white", "wait")]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Back'),
+                         ("b2", 150, (255, 255, 255), 'Connect'),
+                         ("b3", 150, (255, 255, 255), 'Start Game')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -36,7 +41,6 @@ class WaitingRoom:
         """
         Add function docstring here.
         """
-        print("Player num ", player_num, " is moving")
         for event in pg.event.get():
             if (event.type == pg.QUIT or (event.type == pg.KEYDOWN
                                           and event.key == pg.K_ESCAPE)):
@@ -58,7 +62,7 @@ class WaitingRoom:
         else:
             self.connected = True
             self.gameboard.update()
-            self.win.fill(color=PLAY_COLOR)
+            self.screen.fill(color=PLAY_COLOR)
             self.gameboard.draw()
             pg.display.flip()
             self.check_events(player_num)
@@ -80,65 +84,69 @@ class WaitingRoom:
             # Figure out a way to switch the text based off of state
             # so when the player clicks it displays one text or the other
             if i[4] == "click":
-                text.draw(1, 0)
+                text.draw(self.screen, 1, 0)
             elif i[4] == "wait":
-                text.draw(1, 1)
+                text.draw(self.screen, 1, 1)
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            button.draw(self.win, i[2])
+            button.draw(self.screen, i[2])
 
         self.set_button_position("b1", 50, 50)
+        self.set_button_position("b2", 650, 600)
+        self.set_button_position("b3", 650, 700)
 
-    def handle_button_click(self, button_text):
-        """
-        Handle button click events.
-        """
-        if button_text == 'Back':
-            self.app.display = "menu"
+    def network_connection(self):
+        running = True
+        n = Network(self)
+        player = int(n.getP())
 
-    def update(self):
-        mouse_pos = pg.mouse.get_pos()
-        mouse_click = pg.mouse.get_pressed()
+        while running:
+            try:
+                game = n.send("get")
+            except:
+                running = False
+                self.connected = False
+                print("Couldn't get game")
+                break
 
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            if button.is_clicked(mouse_pos) and mouse_click[0]:
-                self.handle_button_click(i[3])
-
-        if (self.updateAllowed == True):
-            running = True
-            n = Network(self)
-            player = int(n.getP())
-
-            while running:
+            if game.bothWent():
+                self.draw_window(game, player)
+                pg.time.delay(500)
                 try:
-                    game = n.send("get")
+                    game = n.send("reset")
                 except:
                     running = False
-                    self.connected = False
                     print("Couldn't get game")
                     break
 
-                if game.bothWent():
-                    self.draw_window(game, player)
-                    pg.time.delay(500)
-                    try:
-                        game = n.send("reset")
-                    except:
-                        running = False
-                        print("Couldn't get game")
-                        break
+                pg.display.update()
+                pg.time.delay(2000)
 
-                    pg.display.update()
-                    pg.time.delay(2000)
+            self.draw_window(game, player)
 
-                self.draw_window(game, player)
+    def update(self):
+        if self.allowUpdate == True:
+            self.network_connection()
         else:
             pass
-
-    def allowUpdate(self):
-        self.updateAllowed = True
+        
+    def handle_button_click(self, pos):
+        """
+        Handle button click events.
+        """
+        for i in self.btn_list:
+            button = getattr(self, i[0])
+            if button.is_clicked(pos):
+                if i[3] == 'Back':
+                    self.app.display = "menu"
+                elif i[3] == 'Connect':
+                    print("Connecting!")
+                    self.allowUpdate = True
+                    # t.Thread(target=self.network_connection).start()
+                elif i[3] == 'Start Game':
+                    print("Starting Game!")
+                    self.server.start_game()
 
     def draw(self):
         """
