@@ -5,7 +5,8 @@ from game import Game
 
 connected = set()
 games = {}
-idCount = 0
+connected_players = []
+REQUIRED_PLAYERS = 4
 
 class Server:
     def __init__(self, app):
@@ -22,8 +23,7 @@ class Server:
     # this is how multiplayer works because we want two people
     # to be able to do things at one time
     #
-    def threaded_client(self, conn, p, gameId):
-        global idCount
+    def threaded_client(self, conn, p, game_id):
         global games
 
         # send initial message to determine which player we are
@@ -34,8 +34,8 @@ class Server:
             try:
                 data = conn.recv(4096).decode()
 
-                if gameId in games:
-                    game = games[gameId]
+                if game_id in games:
+                    game = games[game_id]
 
                     if not data:
                         break
@@ -53,16 +53,14 @@ class Server:
 
         print("Lost connection")
         try:
-            del games[gameId]
-            print("Closing game", gameId)
+            del games[game_id]
+            print("Closing game", game_id)
         except:
             pass
-        idCount -= 1
         conn.close()
 
 
     def run(self):
-        global idCount
         global games
 
         # initialize the socket
@@ -75,27 +73,30 @@ class Server:
             # print out why there is a connection problem
             str(e)
 
-        s.listen(2) # 2 for 2 players
+        s.listen(4) # 4 for 4 players
         print("Waiting for a connection, Server Started")
 
         while True:
             # accept any incoming connections
             # and store the connection and ip address
             conn, addr = s.accept()
-            print("Connected to:", addr)
+            player_id = len(connected_players) + 1
+            print("Player Number: ", player_id, " has connected to: ", addr)
+            connected_players.append((conn, addr, player_id))
 
-            # How many people are connected to the server at once
-            idCount += 1
-            p = 0
-            # What Id is our game?
-            gameId = (idCount - 1)//2
-            # create a new game if the following happens
-            # this means 2 people are already playing and create a new game
-            if idCount % 2 == 1:
-                games[gameId] = Game(gameId)
-                print("Creating a new game...")
-            else:
-                games[gameId].ready = True
-                p = 1 # player equals 1
+            if len(connected_players) == REQUIRED_PLAYERS:
+                # All required players are connected
+                game_id = len(games)
+                games[game_id] = Game(game_id)
+                print(f"Starting game {game_id}")
 
-            start_new_thread(self.threaded_client, (conn, p, gameId))
+                # Mark game as ready and assign players
+                games[game_id].ready = True
+
+                for player in connected_players:
+                    conn, addr, player_id = player
+                    start_new_thread(self.threaded_client,
+                                     (conn, player_id, game_id))
+
+                # clear list for next games
+                connected_players.clear()

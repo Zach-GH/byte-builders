@@ -1,22 +1,56 @@
 """
-Zachary Meisner
-options.py
+Madeline Gyllenhoff
+question_gui.py
 
 Add module docstring here
 """
 
-from settings import pg, BTN_W_LOC, BTN_W, BTN_H
+import sys
+from settings import pg, BTN_W_LOC, BTN_W, BTN_H, MENU_MUSIC
 from components import Button, Text
 
-class Options:
+res_type = pg.RESIZABLE
+
+# class MenuBeats:
+#     """
+#     Add class docstring here.
+#     """
+#     def __init__(self, app):
+#         self.app = app
+#         self.music = MENU_MUSIC
+#         self.fade_in = 5000
+
+#         # Load music during initialization
+#         pg.mixer.music.load(MENU_MUSIC)
+
+#     def is_playing(self):
+#         """
+#         Add function docstring here.
+#         """
+#         return pg.mixer.music.get_busy()
+
+#     def start_music(self):
+#         """
+#         Add function docstring here.
+#         """
+#         pg.mixer.music.play(-1, fade_ms=self.fade_in)
+
+#     def stop_music(self):
+#         """
+#         Add function docstring here.
+#         """
+#         pg.mixer.music.stop()
+
+
+class Question_Gui:
     """
-    Options class to handle the options UI and interactions.
+    Question_Gui class to handle the options UI and interactions.
     """
     def __init__(self, app):
         self.app = app
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
-        self.text_list = [("t1", 150, "Options", "white", "title")]
+        self.text_list = [("t1", 150, "Question_Gui", "white", "title")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
@@ -52,12 +86,13 @@ class Options:
         """
         Handle button click events.
         """
-        if button_text == 'Back':
-            self.app.display = "menu"
+        pass
+        # if button_text == 'Back':
+        #     self.app.display = "menu"
 
     def update(self):
         """
-        Update the Options menu.
+        Update the Question_Gui menu.
         """
         mouse_pos = pg.mouse.get_pos()
         mouse_click = pg.mouse.get_pressed()
@@ -72,3 +107,22 @@ class Options:
         Add function docstring here.
         """
         self.draw_options_ui()
+
+    def check_events(self):
+        """
+        Add function docstring here.
+        """
+        for event in pg.event.get():
+            if (event.type == pg.QUIT or (event.type == pg.KEYDOWN
+                                          and event.key == pg.K_ESCAPE)):
+                pg.quit()
+                sys.exit()
+
+    def run(self):
+        """
+        Add function docstring here.
+        """
+        while True:
+            self.check_events()
+            self.update()
+            self.draw()

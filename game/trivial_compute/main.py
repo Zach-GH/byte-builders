@@ -12,13 +12,14 @@ file in addition to the trivial_compute.py file which will house core logic.
 
 import sys
 from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
-                          MENU_COLOR, PLAY_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
+                          MENU_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
                           TEAM_COLOR)
 from waiting_room import WaitingRoom
 from menu import Menu
 from options import Options
 from trophies import Trophies
 from team import Team
+from question_gui import Question_Gui
 from net.server import Server
 
 resolution = MIN_WIN_RES
@@ -26,6 +27,7 @@ res_type = pg.FULLSCREEN
 game_display = "menu"
 mute = False
 server = False
+q_gui = False
 
 A = 1
 n = len(sys.argv)
@@ -59,6 +61,9 @@ while A < n:
     elif (sys.argv[A] == "-s"):
         server = True
         A += 1
+    elif (sys.argv[A] == "-g"):
+        q_gui = True
+        A += 1
     A += 1
 
 
@@ -88,11 +93,11 @@ class Game:
             for i in self.nav['menu'].btn_list:
                 button = getattr(self.nav['menu'], i[0])
                 if button.area.get_rect(topleft=button.pos).collidepoint(pos):
-                    if i[4] == "Play":
+                    if i[3] == "Play":
                         self.display = "waitingroom"
-                    elif i[4] == "Options":
+                    elif i[3] == "Options":
                         self.display = "options"
-                    elif i[4] == "Mute":
+                    elif i[3] == "Mute":
                         if self.mute == False:
                             self.mute = True
                         else:
@@ -101,11 +106,11 @@ class Game:
                             self.nav['menu'].beats.stop_music()
                         elif not self.nav['menu'].beats.is_playing() and self.mute == False:
                             self.nav['menu'].beats.start_music()
-                    elif i[4] == "Trophies":
+                    elif i[3] == "Trophies":
                         self.display = "trophies"
-                    elif i[4] == "Team":
+                    elif i[3] == "Team":
                         self.display = "team"
-                    elif i[4] == "Quit":
+                    elif i[3] == "Quit":
                         pg.quit()
                         sys.exit()
 
@@ -213,11 +218,25 @@ class RunServer:
         print("Running Trivial Compute Server")
         self.server.run()
 
+class Run_Question_Gui:
+    """
+    Add class docstring here.
+    """
+
+    def __init__(self):
+        self.question_gui = Question_Gui(self)
+
+    def run(self):
+        print("Running Trivial Compute Quesiton Gui")
+        self.question_gui.run()
 
 if __name__ == '__main__':
     if (server == True):
         s = RunServer()
         s.run()
+    elif (q_gui == True):
+        g = Run_Question_Gui()
+        g.run()
     else:
         a = App()
         a.run()

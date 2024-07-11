@@ -2,6 +2,8 @@ class Game:
     def __init__(self, id):
         self.p1Went = False
         self.p2Went = False
+        self.p3Went = False
+        self.p4Went = False
         self.ready = False
         self.id = id
         self.moves = [None, None]

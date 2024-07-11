@@ -17,11 +17,11 @@ class Team:
         self.win = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
         self.text_list = [("t1", 150, "Team", "white", "title")]
-        self.btn_list = [("b1", (54, 57, 63), 150, (255, 255, 255), 'Back')]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
-                                        i[2]), (BTN_W, BTN_H), i[4]))
+                                        i[1]), (BTN_W, BTN_H), i[3]))
 
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
@@ -44,10 +44,16 @@ class Team:
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            button.draw(self.win, i[1], i[3])
+            button.draw(self.win, i[2])
 
         self.set_button_position("b1", 50, 50)
 
+    def handle_button_click(self, button_text):
+        """
+        Handle button click events.
+        """
+        if button_text == 'Back':
+            self.app.display = "menu"
 
     def update(self):
         """
@@ -59,14 +65,7 @@ class Team:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(mouse_pos) and mouse_click[0]:
-                self.handle_button_click(i[4])
-
-    def handle_button_click(self, button_text):
-        """
-        Handle button click events.
-        """
-        if button_text == 'Back':
-            self.app.display = "menu"
+                self.handle_button_click(i[3])
 
     def draw(self):
         """

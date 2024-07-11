@@ -6,9 +6,9 @@ Add module docstring here
 """
 
 import sys
-from settings import pg, PLAY_COLOR
+from settings import pg, PLAY_COLOR, BTN_W_LOC, BTN_W, BTN_H
 from net.network import Network
-from components import Text
+from components import Button, Text
 from gameboard import GameBoard
 
 class WaitingRoom:
@@ -21,17 +21,22 @@ class WaitingRoom:
         self.gameboard = GameBoard(self)
         self.updateAllowed = False
         self.connected = False
-        self.text_list = [("t1", 150, "Click to Play!", "white", "click"),
-                          ("t2", 150, "Waiting for other player", "white", "wait")]
+        self.text_list = [
+            ("t1", 150, "Click to Play!", "white", "click"),
+            ("t2", 150, "Waiting for other player", "white", "wait")]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
 
-
+        for i in self.btn_list:
+            setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
+                                        i[1]), (BTN_W, BTN_H), i[3]))
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
-    def check_events(self):
+    def check_events(self, player_num):
         """
         Add function docstring here.
         """
+        print("Player num ", player_num, " is moving")
         for event in pg.event.get():
             if (event.type == pg.QUIT or (event.type == pg.KEYDOWN
                                           and event.key == pg.K_ESCAPE)):
@@ -39,29 +44,31 @@ class WaitingRoom:
                 sys.exit()
             elif (event.type == pg.KEYDOWN):
                 if event.key == pg.K_LEFT:
-                    self.gameboard.move_player('LEFT')
+                    self.gameboard.move_player(player_num, 'LEFT')
                 elif event.key == pg.K_RIGHT:
-                    self.gameboard.move_player('RIGHT')
+                    self.gameboard.move_player(player_num, 'RIGHT')
                 elif event.key == pg.K_UP:
-                    self.gameboard.move_player('UP')
+                    self.gameboard.move_player(player_num, 'UP')
                 elif event.key == pg.K_DOWN:
-                    self.gameboard.move_player('DOWN')
+                    self.gameboard.move_player(player_num, 'DOWN')
 
-    def draw_window(self, game):
+    def draw_window(self, game, player_num):
         if not(game.connected()):
-            # print("Waiting for other player to connect")
             pass
         else:
-            # print("Connected!")
             self.connected = True
             self.gameboard.update()
             self.win.fill(color=PLAY_COLOR)
             self.gameboard.draw()
             pg.display.flip()
-            self.check_events()
+            self.check_events(player_num)
 
-
-        # pg.display.update()
+    def set_button_position(self, button_name, x, y):
+        """
+        Set the position of a button dynamically.
+        """
+        button = getattr(self, button_name)
+        button.update_position((x, y))
 
     def draw_waitingroom_ui(self):
         """
@@ -77,14 +84,32 @@ class WaitingRoom:
             elif i[4] == "wait":
                 text.draw(1, 1)
 
-        # pg.display.update()
+        for i in self.btn_list:
+            button = getattr(self, i[0])
+            button.draw(self.win, i[2])
+
+        self.set_button_position("b1", 50, 50)
+
+    def handle_button_click(self, button_text):
+        """
+        Handle button click events.
+        """
+        if button_text == 'Back':
+            self.app.display = "menu"
 
     def update(self):
+        mouse_pos = pg.mouse.get_pos()
+        mouse_click = pg.mouse.get_pressed()
+
+        for i in self.btn_list:
+            button = getattr(self, i[0])
+            if button.is_clicked(mouse_pos) and mouse_click[0]:
+                self.handle_button_click(i[3])
+
         if (self.updateAllowed == True):
             running = True
             n = Network(self)
             player = int(n.getP())
-            print("You are player", player)
 
             while running:
                 try:
@@ -96,7 +121,7 @@ class WaitingRoom:
                     break
 
                 if game.bothWent():
-                    self.draw_window(game)
+                    self.draw_window(game, player)
                     pg.time.delay(500)
                     try:
                         game = n.send("reset")
@@ -108,7 +133,7 @@ class WaitingRoom:
                     pg.display.update()
                     pg.time.delay(2000)
 
-                self.draw_window(game)
+                self.draw_window(game, player)
         else:
             pass
 

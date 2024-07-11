@@ -40,6 +40,9 @@ run_tc_1080: main_1080
 # trivial compute run server
 run_tc_server: tc_server
 
+# trivial compute run server
+run_tc_question: tc_question
+
 # multiplayer game
 run_mpg: mpg
 run_mpgs: mpgs
@@ -60,6 +63,9 @@ main_1080:
 
 tc_server:
 	@make tc_server -C game/trivial_compute
+
+tc_question:
+	@make tc_question -C game/trivial_compute
 
 mpg:
 	@make main -C game/multiplayer_game

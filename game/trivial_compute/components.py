@@ -56,12 +56,10 @@ class Button:
         text_area = self.font.render(f"{text}", True, text_color)
         return text_area
 
-    def draw(self, win, color, text_color):
+    def draw(self, win, text_color):
         """
         Draw the button on the screen.
         """
-        self.area.fill((color))
-        win.blit(self.area, self.pos)
         text_area = self.render(self.text, text_color)
         text_x = self.pos[0] + (self.size[0] - text_area.get_width()) / 2
         text_y = self.pos[1] + (self.size[1] - text_area.get_height()) / 2

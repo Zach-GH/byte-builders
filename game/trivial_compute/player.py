@@ -8,10 +8,10 @@ Add module docstring here
 from settings import pg, CELL_SIZE, GRID_COLS, GRID_ROWS
 
 class Player:
-    def __init__(self, screen, start_pos=(0, 0)):
+    def __init__(self, screen, start_pos, color):
         self.screen = screen
         self.pos = start_pos
-        self.color = (255, 0, 0)
+        self.color = color
         self.size = CELL_SIZE
 
     def move(self, direction):

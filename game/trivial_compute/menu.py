@@ -50,12 +50,12 @@ class Menu:
         self.beats = MenuBeats(self)
         self.text_list = [("t1", 150, "Trivial Compute", "white", "title"),
                           ("t2", 80, "Team Byte-Builders", "white", "team")]
-        self.btn_list = [("b1", (54, 57, 63), 200, (255, 255, 255), 'Play'),
-                         ("b2", (54, 57, 63), 200, (255, 255, 255), 'Options'),
-                         ("b3", (54, 57, 63), 200, (255, 255, 255), 'Mute'),
-                         ("b4", (54, 57, 63), 200, (255, 255, 255), 'Trophies'),
-                         ("b5", (54, 57, 63), 200, (255, 255, 255), 'Team'),
-                         ("b6", (54, 57, 63), 200, (255, 255, 255), 'Quit')]
+        self.btn_list = [("b1", 175, (255, 255, 255), 'Play'),
+                         ("b2", 175, (255, 255, 255), 'Options'),
+                         ("b3", 175, (255, 255, 255), 'Mute'),
+                         ("b4", 175, (255, 255, 255), 'Trophies'),
+                         ("b5", 175, (255, 255, 255), 'Team'),
+                         ("b6", 175, (255, 255, 255), 'Quit')]
 
         if (self.app.mute == False):
             self.beats.start_music()
@@ -64,7 +64,7 @@ class Menu:
         j = 0
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
-                                        i[2] + j), (BTN_W, BTN_H), i[4]))
+                                        i[1] + j), (BTN_W, BTN_H), i[3]))
             j += 75
 
         for i in self.text_list:
@@ -83,7 +83,7 @@ class Menu:
 
         for i in self.btn_list:
             button = getattr(self, i[0])
-            button.draw(self.app.app.screen, i[1], i[3])
+            button.draw(self.app.app.screen, i[2])
 
     def update(self):
         """

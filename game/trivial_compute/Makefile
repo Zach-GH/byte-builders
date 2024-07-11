@@ -11,10 +11,13 @@ main_w:
 	@python main.py -r max -t full
 
 main_1440: main.py
-	./main.py -r med -t sized
+	./main.py -r med -t sized -m
 
 main_1080: main.py
 	./main.py -r min -t windowed
 
 tc_server:
 	./main.py -s
+
+tc_question:
+	./main.py -g
