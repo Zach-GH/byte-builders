@@ -22,14 +22,14 @@ class Network:
         try:
             self.client.connect(self.addr)
             # send player number to classify which player is which
-            return self.client.recv(2048).decode()
+            return pickle.loads(self.client.recv(10000))
         except:
             pass
 
     def send(self, data):
         try:
             # send string expect return obj data
-            self.client.send(str.encode(data))
-            return pickle.loads(self.client.recv(2048))
+            self.client.send(pickle.dumps(data))
+            return pickle.loads(self.client.recv(10000))
         except socket.error as e:
             print(e)

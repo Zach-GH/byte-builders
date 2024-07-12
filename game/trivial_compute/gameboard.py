@@ -8,7 +8,6 @@ Add module docstring here
 from settings import (pg, GRID_ROWS, GRID_COLS, GRID_COLOR, CELL_SIZE,
                           BTN_W_LOC, BTN_W, BTN_H)
 from components import Button, Text
-from player import Player
 
 class GameBoard:
     """
@@ -21,14 +20,9 @@ class GameBoard:
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.text_list = [("t1", 150, "Game", "white", "title")]
-        self.btn_list = [("b1", 150, (255, 255, 255), 'Question?')]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Question')]
         self.grid = []
-        self.player1 = Player(self.screen, (0, 0), (255, 0, 0))
-        self.player2 = Player(self.screen, (8, 8), (0, 255, 0))
-        self.player3 = Player(self.screen, (0, 8), (0, 0, 255))
-        self.player4 = Player(self.screen, (8, 0), (255, 255, 0))
-        self.mouse_pressed = False
-
+    
         self.init_grid()
 
         for i in self.btn_list:
@@ -68,31 +62,24 @@ class GameBoard:
         """
         Handle player movement within the grid.
         """
-        if player_num == 1:
-            player_pos = self.player1.get_position()
-        elif player_num == 2:
-            player_pos = self.player2.get_position()
-        elif player_num == 3:
-            player_pos = self.player3.get_position()
-        elif player_num == 4:
-            player_pos = self.player4.get_position()
+        player_num.pos = player_pos
 
         row, col = player_pos
         cell = self.grid[row][col]
         cell['action']()
 
-    def move_player(self, player_num, direction):
-        if player_num == 1:
-            self.player1.move(direction)
-        elif player_num == 2:
-            self.player2.move(direction)
-        elif player_num == 3:
-            self.player3.move(direction)
-        elif player_num == 4:
-            self.player4.move(direction)
+    def move_player(self, p1, p2, p3, p4, direction):
+        p1.move(direction)
+        p2.move(direction)
+        p3.move(direction)
+        p4.move(direction)
 
-        self.handle_player_move(player_num, direction)
-        self.draw()
+        self.handle_player_move(p1, p1.get_position())
+        self.handle_player_move(p2, p2.get_position())
+        self.handle_player_move(p3, p3.get_position())
+        self.handle_player_move(p4, p4.get_position())
+
+        self.draw(p1, p2, p3, p4)
 
     def set_button_position(self, button_name, x, y):
         """
@@ -101,7 +88,7 @@ class GameBoard:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_gameboard_ui(self):
+    def draw_gameboard_ui(self, p1, p2, p3, p4):
         """
         Draw the gameboard UI, including text and buttons.
         """
@@ -110,13 +97,13 @@ class GameBoard:
             button = getattr(self, i[0])
             button.draw(self.screen, i[2])
 
-        self.set_button_position("b1", 50, 50)
+        self.set_button_position("b1", 60, 50)
 
         self.draw_grid()
-        self.player1.draw(self.center_x, self.center_y)
-        self.player2.draw(self.center_x, self.center_y)
-        self.player3.draw(self.center_x, self.center_y)
-        self.player4.draw(self.center_x, self.center_y)
+        p1.draw(self.screen, self.center_x, self.center_y)
+        p2.draw(self.screen, self.center_x, self.center_y)
+        p3.draw(self.screen, self.center_x, self.center_y)
+        p4.draw(self.screen, self.center_x, self.center_y)
 
     def check_gameboard_events(self):
         """
@@ -130,8 +117,8 @@ class GameBoard:
                 if i[0] == "b1":
                     self.app.app.app.run_question_gui()
 
-    def draw(self):
+    def draw(self, p1, p2, p3, p4):
         """
         Add function docstring here.
         """
-        self.draw_gameboard_ui()
+        self.draw_gameboard_ui(p1, p2, p3, p4)

@@ -1,17 +1,24 @@
+import sys
 import socket
 from _thread import *
 import pickle
-from game import Game
+# from game import Game
+from player import Player
 
 connected = set()
 games = {}
+
+players = [Player((0, 0), (255, 0, 0)),
+           Player((8, 8), (0, 255, 0)),
+           Player((0, 8), (0, 0, 255)),
+           Player((8, 0), (255, 255, 0))]
 
 class Server:
     def __init__(self, app):
         self.app = app
         self.server = self.get_local_ip()
         self.port = 5555
-        self.pnum = 1 # player num
+        self.pnum = 2 # player num change to whatever
         self.connected_players = []
 
     def get_local_ip(self):
@@ -27,40 +34,52 @@ class Server:
             self.pnum = 1
             print("pnum is", self.pnum)
 
-    def threaded_client(self, conn, p, game_id):
+    def threaded_client(self, conn, player):
         global games
 
         # send initial message to determine which player we are
-        conn.send(str.encode(str(p)))
+        conn.send(pickle.dumps(players[player]))
+        reply = ""
 
         while True:
             # just in case we are sending too much information double num
             try:
-                data = conn.recv(4096).decode()
+                data = pickle.loads(conn.recv(10000))
+                players[player] = data
 
-                if game_id in games:
-                    game = games[game_id]
 
-                    if not data:
-                        break
-                    else:
-                        if data == "reset":
-                            game.resetWent()
-                        elif data != "get":
-                            game.play(p, data)
-
-                        conn.sendall(pickle.dumps(game))
-                else:
+                if not data:
                     break
+                else:
+                    if self.pnum == 1:
+                        reply = players[0]
+                        conn.sendall(pickle.dumps(reply))
+                    if self.pnum == 2:
+                        reply = players[0]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[1]
+                        conn.sendall(pickle.dumps(reply))
+                    if self.pnum == 3:
+                        reply = players[0]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[1]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[2]
+                        conn.sendall(pickle.dumps(reply))
+                    if self.pnum == 3:
+                        reply = players[0]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[1]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[2]
+                        conn.sendall(pickle.dumps(reply))
+                        reply = players[3]
+                        conn.sendall(pickle.dumps(reply))
+
             except:
                 break
 
         print("Lost connection")
-        try:
-            del games[game_id]
-            print("Closing game", game_id)
-        except:
-            pass
         conn.close()
 
     def run(self):
@@ -86,20 +105,13 @@ class Server:
             player_id = len(self.connected_players) + 1
             print("Player Number: ", player_id, " has connected to: ", addr)
             self.connected_players.append((conn, addr, player_id))
-            print("len(self.connected_players)", len(self.connected_players))
 
             if len(self.connected_players) == self.pnum:
-                game_id = len(games)
-                games[game_id] = Game(game_id)
-                print(f"Starting game {game_id}")
-
-                # Mark game as ready and assign players
-                games[game_id].ready = True
 
                 for player in self.connected_players:
                     conn, addr, player_id = player
                     start_new_thread(self.threaded_client,
-                                     (conn, player_id, game_id))
+                                     (conn, player_id - 1))
 
                 # clear list for next games
                 self.connected_players.clear()

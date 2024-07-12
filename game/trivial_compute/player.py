@@ -8,8 +8,7 @@ Add module docstring here
 from settings import pg, CELL_SIZE, GRID_COLS, GRID_ROWS
 
 class Player:
-    def __init__(self, screen, start_pos, color):
-        self.screen = screen
+    def __init__(self, start_pos, color):
         self.pos = start_pos
         self.color = color
         self.size = CELL_SIZE
@@ -24,10 +23,10 @@ class Player:
         elif direction == 'DOWN':
             self.pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
 
-    def draw(self, center_x, center_y):
+    def draw(self, screen, center_x, center_y):
         x = self.pos[1] * self.size + center_x
         y = self.pos[0] * self.size + center_y
-        pg.draw.rect(self.screen, self.color, (x, y, self.size, self.size))
+        pg.draw.rect(screen, self.color, (x, y, self.size, self.size))
 
     def get_position(self):
         return self.pos

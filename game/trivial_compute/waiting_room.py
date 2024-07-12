@@ -37,7 +37,7 @@ class WaitingRoom:
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
-    def check_events(self, player_num):
+    def check_events(self, p1, p2, p3, p4):
         """
         Add function docstring here.
         """
@@ -48,25 +48,22 @@ class WaitingRoom:
                 sys.exit()
             elif (event.type == pg.KEYDOWN):
                 if event.key == pg.K_LEFT:
-                    self.gameboard.move_player(player_num, 'LEFT')
+                    self.gameboard.move_player(p1, p2, p3, p4, 'LEFT')
                 elif event.key == pg.K_RIGHT:
-                    self.gameboard.move_player(player_num, 'RIGHT')
+                    self.gameboard.move_player(p1, p2, p3, p4, 'RIGHT')
                 elif event.key == pg.K_UP:
-                    self.gameboard.move_player(player_num, 'UP')
+                    self.gameboard.move_player(p1, p2, p3, p4, 'UP')
                 elif event.key == pg.K_DOWN:
-                    self.gameboard.move_player(player_num, 'DOWN')
+                    self.gameboard.move_player(p1, p2, p3, p4, 'DOWN')
             elif event.type == pg.MOUSEBUTTONUP:
                 self.gameboard.check_gameboard_events()
 
-    def draw_window(self, game, player_num):
-        if not(game.connected()):
-            pass
-        else:
-            self.connected = True
-            self.screen.fill(color=PLAY_COLOR)
-            self.gameboard.draw()
-            pg.display.flip()
-            self.check_events(player_num)
+    def draw_window(self, p1, p2, p3, p4):
+        self.connected = True
+        self.screen.fill(color=PLAY_COLOR)
+        self.gameboard.draw(p1, p2, p3, p4)
+        pg.display.flip()
+        self.check_events(p1, p2, p3, p4)
 
     def set_button_position(self, button_name, x, y):
         """
@@ -99,31 +96,14 @@ class WaitingRoom:
     def network_connection(self):
         running = True
         n = Network(self)
-        player = int(n.getP())
+        p1 = n.getP()
 
         while running:
-            try:
-                game = n.send("get")
-            except:
-                running = False
-                self.connected = False
-                print("Couldn't get game")
-                break
+            p2 = n.send(p1)
+            p3 = n.send(p2)
+            p4 = n.send(p3)
 
-            if game.bothWent():
-                self.draw_window(game, player)
-                pg.time.delay(500)
-                try:
-                    game = n.send("reset")
-                except:
-                    running = False
-                    print("Couldn't get game")
-                    break
-
-                pg.display.update()
-                pg.time.delay(2000)
-
-            self.draw_window(game, player)
+            self.draw_window(p1, p2, p3, p4)
 
     def update(self):
         if self.allowUpdate == True:

@@ -72,6 +72,9 @@ tc_server:
 tc_question:
 	@make tc_question -C game/trivial_compute
 
+tc_database:
+	@make tc_database -C game/trivial_compute
+
 # Windows options
 main_w:
 	@make main_w -C game\trivial_compute
