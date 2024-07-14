@@ -10,6 +10,7 @@ from settings import (pg, QGUI_RES, FPS, BTN_W_LOC, BTN_W, BTN_H, QGUI_COLOR,
                       FUN)
 from components import Button, Text
 from beats import Beats
+from run_sql_query import run_sql_query
 
 resolution = QGUI_RES
 res_type = pg.RESIZABLE
@@ -37,25 +38,31 @@ class Question_Gui:
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
-                                        i[1]), (BTN_W, BTN_H), i[3]))
+                                              i[1]), (BTN_W, BTN_H), i[3]))
 
         for i in self.btn_list:
             button = getattr(self, i[0])
             if i[0] == "b1":
                 button.update_size((50, 50))
-        
+
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
     def check_question_gui_events(self, pos):
         """
-        Add function docstring here.
+        Handles the events triggered by GUI buttons related to questions.
+
+        Parameters:
+        - pos: Tuple[int, int]: The position where the mouse click occurred.
         """
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
                 button.was_clicked()
                 if i[0] == "b1":
+                    category = getattr(self, i[1])
+                    # Call for database question
+                    run_sql_query(category)
                     print("Shrek 5 was confirmed the other day!")
                     if self.beats.is_playing():
                         pass
