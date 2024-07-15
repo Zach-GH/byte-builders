@@ -21,3 +21,7 @@ INSERT INTO Questions (questionContent, answerContent, categoryID) VALUES
 ('What is the capital of France?', 'Paris', 3);
 
 SELECT * FROM Questions;
+
+SELECT Questions.questionID, Questions.questionContent, Questions.answerContent, Categories.categoryName
+FROM Questions
+JOIN Categories ON questions.categoryID = Categories.categoryID;

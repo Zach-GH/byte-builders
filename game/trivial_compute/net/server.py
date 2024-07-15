@@ -18,7 +18,7 @@ class Server:
         self.app = app
         self.server = self.get_local_ip()
         self.port = 5555
-        self.pnum = 2 # player num change to whatever
+        self.pnum = 1 # player num change to whatever
         self.connected_players = []
 
     def get_local_ip(self):
@@ -46,7 +46,6 @@ class Server:
             try:
                 data = pickle.loads(conn.recv(10000))
                 players[player] = data
-
 
                 if not data:
                     break
