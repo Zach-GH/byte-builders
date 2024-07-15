@@ -3,3 +3,4 @@ pyinstaller
 pylint
 pymysql
 dotenv
+os
