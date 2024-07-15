@@ -3,7 +3,7 @@ import pymysql
 from dotenv import load_dotenv
 
 
-def run_sql_query(category):
+def run_sql_query(categoryName):
     """
     Executes an SQL query on a given MySQL database and returns the results.
 
@@ -33,7 +33,7 @@ def run_sql_query(category):
     try:
         with connection.cursor() as cursor:
             # Execute the query
-            cursor.execute("SELECT * FROM Questions WHERE category =%s", category)
+            cursor.execute("SELECT Questions.questionID, Questions.questionContent, Questions.answerContent, Categories.categoryName FROM Questions LEFT JOIN Categories ON Questions.categoryID = Categories.categoryID WHERE Categories.categoryName=%s", categoryName)
 
             # Fetch all the results
             results = cursor.fetchall()
