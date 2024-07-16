@@ -8,10 +8,10 @@ from player import Player
 connected = set()
 games = {}
 
-players = [Player((0, 0), (255, 0, 0)),
-           Player((8, 8), (0, 255, 0)),
-           Player((0, 8), (0, 0, 255)),
-           Player((8, 0), (255, 255, 0))]
+players = [Player((0, 0), (255, 0, 0), 'P1'),
+           Player((8, 8), (0, 255, 0), 'P2'),
+           Player((0, 8), (0, 0, 255), 'P3'),
+           Player((8, 0), (255, 255, 0), 'P4')]
 
 class Server:
     def __init__(self, app):

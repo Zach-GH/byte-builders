@@ -1,7 +1,10 @@
 # -r game resolution: max, med, min
 # -t resolution type: full, sized, windowed
-# -d game display: menu, gameboard, options, trophies, team
+# -d game display: menu, waitingroom, options, trophies, team
 # -m Start the game with the music muted.
+# -s Run server
+# -g Run standalone question gui
+# -db Run standalone database gui
 
 # Mac/Linux options
 main: main.py

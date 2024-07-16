@@ -28,7 +28,7 @@ class GameBoard:
                           ("t7", 25, "HQ", "white", "hq2"),
                           ("t8", 25, "HQ", "black", "hq3"),
                           ("t9", 25, "HQ", "black", "hq4"),
-                          ("t10", 25, "Trivial Compute", "white", "tc"),]
+                          ("t10", 25, "Trivial Compute", "white", "tc")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Question')]
         self.grid = []
@@ -42,17 +42,28 @@ class GameBoard:
         for i in self.text_list:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
+    def render_text_to_rect(self, text, font_size, text_color, rect):
+        font = pg.font.Font(None, font_size)
+        lines = text.split("\n")
+        y_offset = 0
+
+        for line in lines:
+            text_surface = font.render(line, True, text_color)
+            text_rect = text_surface.get_rect(center=(rect.centerx, rect.y + y_offset + text_surface.get_height() / 2 + 20))
+            self.screen.blit(text_surface, text_rect.topleft)
+            y_offset += text_surface.get_height()
+
     def move_action(self):
-        print("Move action executed")
+        pass
 
     def roll_again_action(self):
-        print("Roll Again action executed")
+        print("Roll Again!")
 
     def hq_action(self):
-        print("HQ action executed")
+        print("HQ!")
 
     def trivial_compute_action(self):
-        print("Trivial Compute action executed")
+        print("Trivial Compute!")
 
     def init_grid(self):
         t2_rect = t3_rect = t4_rect = t5_rect = t6_rect = t7_rect = 0
@@ -74,16 +85,12 @@ class GameBoard:
                     cell['color'] = (255, 255, 255) # White
                     cell['text'] = "Roll\nAgain"
                     cell['text_color'] = "Black"
-                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.screen.blit(text_surface_object, text_rect)
                     cell['action'] = self.roll_again_action
                     cell['special'] = True
                 elif (row == 4 and col == 4):
                     cell['color'] = (255, 255, 255) # White
                     cell['text'] = "Trivial\nCompute"
                     cell['text_color'] = "Black"
-                    # t10_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.screen.blit(text_surface_object, t10_rect)
                     cell['action'] = self.trivial_compute_action
                     cell['special'] = True
                 elif ((row == 0 and col == 1) or (row == 0 and col == 5)
@@ -96,8 +103,6 @@ class GameBoard:
                     cell['color'] = (255, 255, 0) # Yellow
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
-                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.game_screen.blit(text_surface_object, text_rect)
                     cell['action'] = self.hq_action
                     cell['special'] = True
                 elif ((row == 0 and col == 3) or (row == 0 and col == 7)
@@ -110,8 +115,6 @@ class GameBoard:
                     cell['color'] = (0, 255, 0) # Green
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
-                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.game_screen.blit(text_surface_object, text_rect)
                     cell['action'] = self.hq_action
                     cell['special'] = True
                 elif ((row == 1 and col == 0) or (row == 1 and col == 8)
@@ -124,8 +127,6 @@ class GameBoard:
                     cell['color'] = (255, 0, 0) # Red
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
-                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.game_screen.blit(text_surface_object, text_rect)
                     cell['action'] = self.hq_action
                     cell['special'] = True
                 elif ((row == 0 and col == 2) or (row == 0 and col == 6)
@@ -138,8 +139,6 @@ class GameBoard:
                     cell['color'] = (0, 0, 255) # Blue
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
-                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
-                    # self.game_screen.blit(text_surface_object, text_rect)
                     cell['action'] = self.hq_action
                     cell['special'] = True
                 else:
@@ -154,7 +153,35 @@ class GameBoard:
         for row in self.grid:
             for cell in row:
                 pg.draw.rect(self.screen, cell['color'], cell['rect'])
-                pg.draw.rect(self.screen, (0, 0, 0), cell['rect'], 1)
+                if ( # top left and top right
+                    cell['id'] == "1-1" or cell['id'] == "1-2"
+                    or cell['id'] == "1-3" or cell['id'] == "1-5"
+                    or cell['id'] == "1-6" or cell['id'] == "1-7"
+                    or cell['id'] == "2-1" or cell['id'] == "2-2"
+                    or cell['id'] == "2-3" or cell['id'] == "2-5"
+                    or cell['id'] == "2-6" or cell['id'] == "2-7"
+                    or cell['id'] == "3-1" or cell['id'] == "3-2"
+                    or cell['id'] == "3-3" or cell['id'] == "3-5"
+                    or cell['id'] == "3-6" or cell['id'] == "3-7"
+                    # bottom left or bottom right
+                    or cell['id'] == "5-1" or cell['id'] == "5-2"
+                    or cell['id'] == "5-3" or cell['id'] == "5-5"
+                    or cell['id'] == "5-6" or cell['id'] == "5-7"
+                    or cell['id'] == "6-1" or cell['id'] == "6-2"
+                    or cell['id'] == "6-3" or cell['id'] == "6-5"
+                    or cell['id'] == "6-6" or cell['id'] == "6-7"
+                    or cell['id'] == "7-1" or cell['id'] == "7-2"
+                    or cell['id'] == "7-3" or cell['id'] == "7-5"
+                    or cell['id'] == "7-6"
+                    or cell['id'] == "7-7"):
+                    pass
+                else:
+                    pg.draw.rect(self.screen, (0, 0, 0), cell['rect'], 1)
+                
+                # Render text if available
+                if 'text' in cell:
+                    self.render_text_to_rect(cell['text'], 30, cell['text_color'], cell['rect'])
+
 
     def handle_player_move(self, player_num, player_pos):
         """
