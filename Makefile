@@ -14,7 +14,7 @@ test_release_tc:
 lint_tc:
 	@pylint --rcfile=.pylintrc ./game/trivial_compute/*.py
 
-# clean all un-needed files from your repository
+# clean all unneeded files from your repository
 clean_tc:
 	rm -rf ${tc_dir}/__pycache__ \
 	${tc_dir}/build ${tc_dir}/dist \
@@ -52,11 +52,6 @@ run_tc_w_server: tc_server_w
 run_tc_w_question: tc_question_w
 run_tc_w_database: tc_database_w
 
-# multiplayer game
-run_mpg: mpg
-run_mpgs: mpgs
-run_mpgn: mpgn
-
 main:
 	@make main -C game/trivial_compute
 
@@ -90,15 +85,3 @@ tc_question_w:
 
 tc_database_w:
 	@make tc_database_w -C game\trivial_compute
-
-mpg:
-	@make main -C game/multiplayer_game
-
-mpgs:
-	@make server -C game/multiplayer_game
-
-mpgn:
-	@make network -C game/multiplayer_game
-
-mpgc:
-	@make client -C game/multiplayer_game
