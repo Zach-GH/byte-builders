@@ -27,6 +27,7 @@ class Player:
         x = self.pos[1] * self.size + center_x
         y = self.pos[0] * self.size + center_y
         pg.draw.rect(screen, self.color, (x, y, self.size, self.size))
+        pg.draw.rect(screen, (0, 0, 0), (x, y, self.size, self.size), 5)
 
     def get_position(self):
         return self.pos

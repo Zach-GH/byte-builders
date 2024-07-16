@@ -24,12 +24,14 @@ class WaitingRoom:
         self.s = Server(self)
         self.connected = False
         self.allowUpdate = False
-        self.text_list = [
-            ("t1", 150, "Click to Play!", "white", "click"),
-            ("t2", 150, f"Total Players Connected: {len(self.s.connected_players)}", "white", "tplayers")]
+        self.text_list = [("t1", 150, "Click to Play!", "white", "click"),
+                          ("t2", 150,
+                           f"Total Players Connected: {len(self.s.connected_players)}",
+                           "white", "total_players")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back'),
                          ("b2", 150, (255, 255, 255), 'Connect'),
-                         ("b3", 150, (255, 255, 255), f'Player Count: {self.s.pnum}')]
+                         ("b3", 150, (255, 255, 255),
+                          f'Player Count: {self.s.pnum}')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -79,9 +81,9 @@ class WaitingRoom:
 
         for i in self.text_list:
             text = getattr(self, i[0])
-            if i[4] == "click":
+            if i[0] == "t1":
                 text.draw(self.screen, 1, 0)
-            elif i[4] == "tplayers":
+            elif i[0] == "t2":
                 text.update_text(f"Total Players Connected: {len(self.s.connected_players)}")
                 text.draw(self.screen, 1, 1)
 

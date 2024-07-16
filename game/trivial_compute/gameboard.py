@@ -19,8 +19,18 @@ class GameBoard:
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
-        self.text_list = [("t1", 150, "Game", "white", "title")]
-        self.btn_list = [("b1", 150, (255, 255, 255), 'Question')]
+        self.text_list = [("t1", 25, "Game", "white", "title"),
+                          ("t2", 25, "Roll\nAgain", "white", "ra1"),
+                          ("t3", 25, "Roll\nAgain", "white", "ra2"),
+                          ("t4", 25, "Roll\nAgain", "white", "ra3"),
+                          ("t5", 25, "Roll\nAgain", "white", "ra4"),
+                          ("t6", 25, "HQ", "white", "hq1"),
+                          ("t7", 25, "HQ", "white", "hq2"),
+                          ("t8", 25, "HQ", "black", "hq3"),
+                          ("t9", 25, "HQ", "black", "hq4"),
+                          ("t10", 25, "Trivial Compute", "white", "tc"),]
+        self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
+                         ("b2", 150, (255, 255, 255), 'Question')]
         self.grid = []
     
         self.init_grid()
@@ -35,7 +45,18 @@ class GameBoard:
     def move_action(self):
         print("Move action executed")
 
+    def roll_again_action(self):
+        print("Roll Again action executed")
+
+    def hq_action(self):
+        print("HQ action executed")
+
+    def trivial_compute_action(self):
+        print("Trivial Compute action executed")
+
     def init_grid(self):
+        t2_rect = t3_rect = t4_rect = t5_rect = t6_rect = t7_rect = 0
+        t8_rect = t9_rect = t10_rect = 0
         for row in range(GRID_ROWS):
             row_list = []
             for col in range(GRID_COLS):
@@ -45,8 +66,84 @@ class GameBoard:
                     'action': self.move_action,
                     'rect': pg.Rect(col * CELL_SIZE + self.center_x,
                                     row * CELL_SIZE + self.center_y,
-                                    CELL_SIZE, CELL_SIZE)
+                                    CELL_SIZE, CELL_SIZE),
+                    'special': False
                 }
+                if ((row == 0 and col == 0) or (row == 0 and col == 8)
+                    or (row == 8 and col == 0) or (row == 8 and col == 8)):
+                    cell['color'] = (255, 255, 255) # White
+                    cell['text'] = "Roll\nAgain"
+                    cell['text_color'] = "Black"
+                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.screen.blit(text_surface_object, text_rect)
+                    cell['action'] = self.roll_again_action
+                    cell['special'] = True
+                elif (row == 4 and col == 4):
+                    cell['color'] = (255, 255, 255) # White
+                    cell['text'] = "Trivial\nCompute"
+                    cell['text_color'] = "Black"
+                    # t10_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.screen.blit(text_surface_object, t10_rect)
+                    cell['action'] = self.trivial_compute_action
+                    cell['special'] = True
+                elif ((row == 0 and col == 1) or (row == 0 and col == 5)
+                      or (row == 1 and col == 4) or (row == 2 and col == 8)
+                      or (row == 4 and col == 6) or (row == 5 and col == 4)
+                      or (row == 6 and col == 8) or (row == 8 and col == 1)
+                      or (row == 8 and col == 5)):
+                    cell['color'] = (255, 255, 0) # Yellow
+                elif (row == 4 and col == 0):
+                    cell['color'] = (255, 255, 0) # Yellow
+                    cell['text'] = "HQ"
+                    cell['text_color'] = "Black"
+                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.game_screen.blit(text_surface_object, text_rect)
+                    cell['action'] = self.hq_action
+                    cell['special'] = True
+                elif ((row == 0 and col == 3) or (row == 0 and col == 7)
+                      or (row == 2 and col == 0) or (row == 3 and col == 4)
+                      or (row == 4 and col == 2) or (row == 6 and col == 0)
+                      or (row == 7 and col == 4) or (row == 8 and col == 3)
+                      or (row == 8 and col == 7)):
+                    cell['color'] = (0, 255, 0) # Green
+                elif (row == 4 and col == 8):
+                    cell['color'] = (0, 255, 0) # Green
+                    cell['text'] = "HQ"
+                    cell['text_color'] = "Black"
+                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.game_screen.blit(text_surface_object, text_rect)
+                    cell['action'] = self.hq_action
+                    cell['special'] = True
+                elif ((row == 1 and col == 0) or (row == 1 and col == 8)
+                      or (row == 4 and col == 3) or (row == 4 and col == 7)
+                      or (row == 5 and col == 0) or (row == 5 and col == 8)
+                      or (row == 6 and col == 4) or (row == 8 and col == 2)
+                      or (row == 8 and col == 6)):
+                    cell['color'] = (255, 0, 0) # Red
+                elif (row == 0 and col == 4):
+                    cell['color'] = (255, 0, 0) # Red
+                    cell['text'] = "HQ"
+                    cell['text_color'] = "White"
+                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.game_screen.blit(text_surface_object, text_rect)
+                    cell['action'] = self.hq_action
+                    cell['special'] = True
+                elif ((row == 0 and col == 2) or (row == 0 and col == 6)
+                      or (row == 2 and col == 4) or (row == 3 and col == 0)
+                      or (row == 3 and col == 8) or (row == 4 and col == 1)
+                      or (row == 4 and col == 5) or (row == 7 and col == 0)
+                      or (row == 7 and col == 8)):
+                    cell['color'] = (0, 0, 255) # Blue
+                elif (row == 8 and col == 4):
+                    cell['color'] = (0, 0, 255) # Blue
+                    cell['text'] = "HQ"
+                    cell['text_color'] = "White"
+                    # text_rect = text_surface_object.get_rect(center=rect_obj.center)
+                    # self.game_screen.blit(text_surface_object, text_rect)
+                    cell['action'] = self.hq_action
+                    cell['special'] = True
+                else:
+                    cell['color'] = (255, 255, 255) # White
                 row_list.append(cell)
             self.grid.append(row_list)
 
@@ -56,7 +153,8 @@ class GameBoard:
         """
         for row in self.grid:
             for cell in row:
-                pg.draw.rect(self.screen, cell['color'], cell['rect'], 1)
+                pg.draw.rect(self.screen, cell['color'], cell['rect'])
+                pg.draw.rect(self.screen, (0, 0, 0), cell['rect'], 1)
 
     def handle_player_move(self, player_num, player_pos):
         """
@@ -97,7 +195,8 @@ class GameBoard:
             button = getattr(self, i[0])
             button.draw(self.screen, i[2])
 
-        self.set_button_position("b1", 60, 50)
+        self.set_button_position("b1", 75, 50)
+        self.set_button_position("b2", 1200, 50)
 
         self.draw_grid()
         p1.draw(self.screen, self.center_x, self.center_y)
@@ -115,6 +214,9 @@ class GameBoard:
             if button.is_clicked(pos):
                 button.was_clicked()
                 if i[0] == "b1":
+                    print("Help! How do I play?")
+                    # Add logic to bring up Help screen here
+                if i[0] == "b2":
                     self.app.app.app.run_question_gui()
 
     def draw(self, p1, p2, p3, p4):
