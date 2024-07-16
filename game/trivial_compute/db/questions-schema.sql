@@ -1,3 +1,6 @@
+CREATE DATABASE trivial_compute;
+USE trivial_compute;
+
 CREATE TABLE Categories (
     categoryID INT AUTO_INCREMENT PRIMARY KEY,
     categoryName VARCHAR(255) NOT NULL

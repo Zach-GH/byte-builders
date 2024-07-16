@@ -2,4 +2,4 @@ pygame
 pyinstaller
 pylint
 pymysql
-dotenv
+python-dotenv

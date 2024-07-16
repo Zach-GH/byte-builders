@@ -23,7 +23,7 @@ try:
     with connection.cursor() as cursor:
         # Execute the query
         cursor.execute("SELECT * FROM Questions")
-        
+
         # Fetch all the results
         results = cursor.fetchall()
         
