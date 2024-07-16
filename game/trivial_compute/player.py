@@ -61,14 +61,45 @@ class Player:
             self.pos = pos
 
     def draw(self, screen, center_x, center_y):
-        y = self.pos[0] * self.size + center_y + self.size / 2
-        x = self.pos[1] * self.size + center_x + self.size / 2
-        radius = self.size / 2
 
-        pg.draw.circle(screen, self.color, (x, y), radius)
-        pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
+        radius = self.size / 4 # size of the player
 
-        self.render_text_to_circle(screen, self.name, 30, pg.Color("black"), (x, y), radius)
+        if self.color == (255, 255, 0): # yellow
+            # position of the player
+            y = self.pos[0] * self.size + center_y + self.size / 2 - 25
+            x = self.pos[1] * self.size + center_x + self.size / 2 + 25
+            # Draw player
+            pg.draw.circle(screen, self.color, (x, y), radius)
+            pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
+            # Draw player name
+            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"), (x, y), radius)
+        elif self.color == (0, 255, 0): # green
+            # position of the player
+            y = self.pos[0] * self.size + center_y + self.size / 2 + 25
+            x = self.pos[1] * self.size + center_x + self.size / 2 - 25
+            # Draw player
+            pg.draw.circle(screen, self.color, (x, y), radius)
+            pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
+            # Draw player name
+            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"), (x, y), radius)
+        elif self.color == (255, 0, 0): # red
+            # position of the player
+            y = self.pos[0] * self.size + center_y + self.size / 2 - 25
+            x = self.pos[1] * self.size + center_x + self.size / 2 - 25
+            # Draw player
+            pg.draw.circle(screen, self.color, (x, y), radius)
+            pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
+            # Draw player name
+            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"), (x, y), radius)
+        elif self.color == (0, 0, 255): # blue
+            # position of the player
+            y = self.pos[0] * self.size + center_y + self.size / 2 + 25
+            x = self.pos[1] * self.size + center_x + self.size / 2 + 25
+            # Draw player
+            pg.draw.circle(screen, self.color, (x, y), radius)
+            pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
+            # Draw player name
+            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"), (x, y), radius)
 
     def get_position(self):
         return self.pos

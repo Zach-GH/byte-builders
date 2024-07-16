@@ -30,7 +30,8 @@ class GameBoard:
                           ("t9", 25, "HQ", "black", "hq4"),
                           ("t10", 25, "Trivial Compute", "white", "tc")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
-                         ("b2", 150, (255, 255, 255), 'Question')]
+                         ("b2", 150, (255, 255, 255), 'Question'),
+                         ("b3", 150, (255, 255, 255), 'Dice Go Here?')]
         self.grid = []
     
         self.init_grid()
@@ -66,8 +67,6 @@ class GameBoard:
         print("Trivial Compute!")
 
     def init_grid(self):
-        t2_rect = t3_rect = t4_rect = t5_rect = t6_rect = t7_rect = 0
-        t8_rect = t9_rect = t10_rect = 0
         for row in range(GRID_ROWS):
             row_list = []
             for col in range(GRID_COLS):
@@ -222,9 +221,11 @@ class GameBoard:
             button = getattr(self, i[0])
             button.draw(self.screen, i[2])
 
+        # find a dynamic way to position left or right
         self.set_button_position("b1", 75, 50)
-        self.set_button_position("b2", 1200, 50)
-
+        self.set_button_position("b2", 1600, 50)
+        self.set_button_position("b3", 1600, 250)
+    
         self.draw_grid()
         p1.draw(self.screen, self.center_x, self.center_y)
         p2.draw(self.screen, self.center_x, self.center_y)
@@ -243,8 +244,10 @@ class GameBoard:
                 if i[0] == "b1":
                     print("Help! How do I play?")
                     # Add logic to bring up Help screen here
-                if i[0] == "b2":
+                elif i[0] == "b2":
                     self.app.app.app.run_question_gui()
+                elif i[0] == "b3":
+                    print("Rollin Rollin Rollin")
 
     def draw(self, p1, p2, p3, p4):
         """
