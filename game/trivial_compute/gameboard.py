@@ -31,7 +31,7 @@ class GameBoard:
                           ("t10", 25, "Trivial Compute", "white", "tc")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Question'),
-                         ("b3", 150, (255, 255, 255), 'Dice Go Here?')]
+                         ("b3", 150, (255, 255, 255), 'Dice Go Here')]
         self.grid = []
     
         self.init_grid()
