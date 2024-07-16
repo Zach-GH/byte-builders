@@ -1,0 +1,5 @@
+pygame
+pyinstaller
+pylint
+pymysql
+python-dotenv
