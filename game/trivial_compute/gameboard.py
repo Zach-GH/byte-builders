@@ -31,7 +31,7 @@ class GameBoard:
                           ("t10", 25, "Trivial Compute", "white", "tc")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Question'),
-                         ("b3", 150, (255, 255, 255), 'Dice Go Here')]
+                         ("b3", 75, (255, 255, 255), 'Dice Go Here')]
         self.grid = []
     
         self.init_grid()
@@ -219,12 +219,14 @@ class GameBoard:
 
         for i in self.btn_list:
             button = getattr(self, i[0])
+            if i[0] == "b3":
+                button.update_size((35, 35))
             button.draw(self.screen, i[2])
 
         # find a dynamic way to position left or right
         self.set_button_position("b1", 75, 50)
-        self.set_button_position("b2", 1600, 50)
-        self.set_button_position("b3", 1600, 250)
+        self.set_button_position("b2", 1200, 50)
+        self.set_button_position("b3", 1250, 250)
     
         self.draw_grid()
         p1.draw(self.screen, self.center_x, self.center_y)

@@ -33,6 +33,7 @@ release_tc: clean_tc
 
 # trivial compute run options
 run_tc: main
+run_dice: dice
 run_tc_1440: main_1440
 run_tc_1080: main_1080
 
@@ -54,6 +55,9 @@ run_tc_w_database: tc_database_w
 
 main:
 	@make main -C game/trivial_compute
+
+dice:
+	@make dice -C game/dice
 
 main_1440:
 	@make main_1440 -C game/trivial_compute
