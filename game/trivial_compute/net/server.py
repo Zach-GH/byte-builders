@@ -44,7 +44,7 @@ class Server:
         while True:
             # just in case we are sending too much information double num
             try:
-                data = pickle.loads(conn.recv(2048))
+                data = pickle.loads(conn.recv(10000))
                 players[player] = data
 
                 if not data:

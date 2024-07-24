@@ -49,9 +49,9 @@ run_tc_database: tc_database
 # Windows options
 run_tc_w: main_w
 run_tc_1440_w: main_1440_w
-run_tc_w_server: tc_server_w
-run_tc_w_question: tc_question_w
-run_tc_w_database: tc_database_w
+run_tc_server_w: tc_server_w
+run_tc_question_w: tc_question_w
+run_tc_database_w: tc_database_w
 
 main:
 	@make main -C game/trivial_compute
