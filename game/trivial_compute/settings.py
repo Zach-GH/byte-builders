@@ -19,6 +19,10 @@ TROPHIES_COLOR = (40, 40, 40)
 QGUI_COLOR =     (40, 40, 40)
 DGUI_COLOR =     (40, 40, 40)
 
+# Intended for dice.
+WHITE =     (255, 255, 255)
+BLACK =     (0, 0, 0)
+
 FPATH = os.path.join("assets", "font", "balmoral.ttf")
 FONT_PATH = os.path.realpath(FPATH)
 

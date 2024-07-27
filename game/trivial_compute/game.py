@@ -1,3 +1,19 @@
+"""
+Zachary Meisner
+game.py
+
+Please note that none of this file accurately pertains
+to the logic we are going to need to provide.
+
+This is a file written based off of the initial tutorial
+I followed and has corresponding logic to the game
+Rock Paper Scissors.  Please take into consideration that
+when this file is going to be used, we will change it to
+have our own game logic, but is meant to be nothing other
+than a template waiting to be filled out for the time being.
+
+"""
+
 class Game:
     def __init__(self, id):
         self.p1Went = False

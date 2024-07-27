@@ -9,6 +9,8 @@ from settings import (pg, GRID_ROWS, GRID_COLS, GRID_COLOR, CELL_SIZE,
                           BTN_W_LOC, BTN_W, BTN_H)
 from components import Button, Text
 
+from dice import Dice
+
 class GameBoard:
     """
     GameBoard class to handle the gameboard UI and interactions.
@@ -16,6 +18,7 @@ class GameBoard:
     def __init__(self, app):
         self.app = app
         self.screen = self.app.screen
+        self.dice = Dice(self)
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
@@ -31,9 +34,9 @@ class GameBoard:
                           ("t10", 25, "Trivial Compute", "white", "tc")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Question'),
-                         ("b3", 75, (255, 255, 255), 'Dice Go Here')]
+                         ("b3", 150, (255, 255, 255), 'Dice Go Here')]
         self.grid = []
-    
+
         self.init_grid()
 
         for i in self.btn_list:
@@ -181,7 +184,6 @@ class GameBoard:
                 if 'text' in cell:
                     self.render_text_to_rect(cell['text'], 30, cell['text_color'], cell['rect'])
 
-
     def handle_player_move(self, player_num, player_pos):
         """
         Handle player movement within the grid.
@@ -225,9 +227,9 @@ class GameBoard:
 
         # find a dynamic way to position left or right
         self.set_button_position("b1", 75, 50)
-        self.set_button_position("b2", 1200, 50)
-        self.set_button_position("b3", 1250, 250)
-    
+        self.set_button_position("b2", 1600, 50)
+        self.set_button_position("b3", 1650, 250)
+
         self.draw_grid()
         p1.draw(self.screen, self.center_x, self.center_y)
         p2.draw(self.screen, self.center_x, self.center_y)
@@ -249,10 +251,11 @@ class GameBoard:
                 elif i[0] == "b2":
                     self.app.app.app.run_question_gui()
                 elif i[0] == "b3":
-                    print("Rollin Rollin Rollin")
+                    self.dice.roll_dice()
 
     def draw(self, p1, p2, p3, p4):
         """
         Add function docstring here.
         """
         self.draw_gameboard_ui(p1, p2, p3, p4)
+        self.dice.draw_dice(self.x - 300, self.y - 850, 100)
