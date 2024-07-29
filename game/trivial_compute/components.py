@@ -64,23 +64,19 @@ class Button:
         text_area = self.font.render(f"{text}", True, text_color)
         return text_area
 
-    def draw(self, win, text_color, invisible):
+    def draw(self, win, text_color):
         """
         Draw the button on the screen.
         """
-        if not invisible:
-            text_area = self.render(self.text, text_color)
-            text_x = self.pos[0] + (self.size[0] - text_area.get_width()) / 2
-            text_y = self.pos[1] + (self.size[1] - text_area.get_height()) / 2
-            win.blit(text_area, (text_x, text_y))
+        text_area = self.render(self.text, text_color)
+        text_x = self.pos[0] + (self.size[0] - text_area.get_width()) / 2
+        text_y = self.pos[1] + (self.size[1] - text_area.get_height()) / 2
+        win.blit(text_area, (text_x, text_y))
 
-            # Update rect to encompass the text area
-            self.rect.width = text_area.get_width()
-            self.rect.height = text_area.get_height()
-            self.rect.topleft = (text_x, text_y)
-        else:
-            # No drawing for invisible button
-            self.rect = pg.Rect(self.pos, self.size)  # Ensure rect retains original size and position
+        # Update rect to encompass the text area
+        self.rect.width = text_area.get_width()
+        self.rect.height = text_area.get_height()
+        self.rect.topleft = (text_x, text_y)
 
     def is_clicked(self, mouse_pos):
         """

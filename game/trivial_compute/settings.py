@@ -10,7 +10,7 @@ import pygame as pg # type: ignore # pylint: disable=unused-import
 import pygame.freetype as ft # type: ignore # pylint: disable=unused-import
 import os
 
-FPS = 60
+FPS = 90
 MENU_COLOR =     (40, 40, 40)
 PLAY_COLOR =     (40, 40, 40)
 TEAM_COLOR =     (40, 40, 40)
@@ -41,6 +41,10 @@ MENU_MUSIC= os.path.realpath(MPATH)
 # https://opengameart.org/content/menu-selection-click
 CPATH = os.path.join("assets", "sounds", "Click.wav")
 CLICK= os.path.realpath(CPATH)
+
+# https://pixabay.com/sound-effects/dice-142528/
+CPATH = os.path.join("assets", "sounds", "Dice.mp3")
+DICE= os.path.realpath(CPATH)
 
 CELL_SIZE = 90
 GRID_SIZE = GRID_ROWS, GRID_COLS = 9, 9

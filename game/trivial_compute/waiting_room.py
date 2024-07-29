@@ -16,7 +16,6 @@ from net.server import Server
 class WaitingRoom:
     def __init__(self, app):
         self.app = app
-        self.clock = self.app.app.clock # what happened to my poor clock?
         self.screen = self.app.app.screen
         self.x = self.app.app.x
         self.y = self.app.app.y
@@ -64,7 +63,7 @@ class WaitingRoom:
         self.connected = True
         self.screen.fill(color=PLAY_COLOR)
         self.gameboard.draw(p1, p2, p3, p4)
-        pg.display.flip() # should this be below check_events?
+        pg.display.flip()
         self.check_events(p1, p2, p3, p4)
 
     def set_button_position(self, button_name, x, y):
