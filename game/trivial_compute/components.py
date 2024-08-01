@@ -110,4 +110,3 @@ class Button:
         self.rect.size = self.size
         self.area = pg.Surface(self.rect.size)
         self.font = pg.font.Font(pg.font.get_default_font(), self.size[1])
-
