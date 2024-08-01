@@ -135,7 +135,8 @@ class Grid:
                     cell['action'] = self.hq_action
                     cell['special'] = True
                 else:
-                    cell['color'] = (255, 255, 255) # White
+                    pass
+                    # cell['color'] = (255, 255, 255) # White
                 row_list.append(cell)
             self.grid.append(row_list)
 
@@ -169,11 +170,12 @@ class Grid:
                     or cell['id'] == "7-7"):
                     pass
                 else:
-                    pg.draw.rect(self.screen, (0, 0, 0), cell['rect'], 1)
+                    pass
                 
                 # Render text if available
                 if 'text' in cell:
-                    self.render_text_to_rect(cell['text'], 30, cell['text_color'], cell['rect'])
+                    self.render_text_to_rect(cell['text'], 30,
+                                             cell['text_color'], cell['rect'])
 
         p1.draw(self.screen, self.center_x, self.center_y)
         p2.draw(self.screen, self.center_x, self.center_y)

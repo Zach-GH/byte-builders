@@ -77,13 +77,13 @@ class WaitingRoom:
         """
         Draw the waitingroom UI, including text and buttons.
         """
-
         for i in self.text_list:
             text = getattr(self, i[0])
             if i[0] == "t1":
                 text.draw(self.screen, 1, 0)
             elif i[0] == "t2":
-                text.update_text(f"Total Players Connected: {len(self.s.connected_players)}")
+                text.update_text(
+                    f"Total Players Connected: {len(self.s.connected_players)}")
                 text.draw(self.screen, 1, 1)
 
         for i in self.btn_list:

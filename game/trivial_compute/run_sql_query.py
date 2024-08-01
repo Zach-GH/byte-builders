@@ -2,7 +2,6 @@ import os
 import pymysql
 from dotenv import load_dotenv
 
-
 def run_sql_query(category):
     """
     Executes an SQL query on a given MySQL database and returns the results.
