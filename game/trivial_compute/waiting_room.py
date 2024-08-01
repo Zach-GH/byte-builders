@@ -19,6 +19,8 @@ class WaitingRoom:
         self.screen = self.app.app.screen
         self.x = self.app.app.x
         self.y = self.app.app.y
+        self.center_x = self.x / 2
+        self.center_y = self.y / 2
         self.gameboard = GameBoard(self)
         self.s = Server(self)
         self.connected = False
@@ -91,8 +93,8 @@ class WaitingRoom:
             button.draw(self.screen, i[2])
 
         self.set_button_position("b1", 50, 50)
-        self.set_button_position("b2", 900, 650)
-        self.set_button_position("b3", 900, 300)
+        self.set_button_position("b2", self.center_x - 50, self.center_y + 150)
+        self.set_button_position("b3", self.center_x - 50, self.center_y - 200)
 
     def network_connection(self):
         running = True

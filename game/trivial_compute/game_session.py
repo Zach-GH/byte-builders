@@ -1,6 +1,6 @@
 """
 Zachary Meisner
-game.py
+game_session.py
 
 Please note that none of this file accurately pertains
 to the logic we are going to need to provide.
@@ -14,7 +14,7 @@ than a template waiting to be filled out for the time being.
 
 """
 
-class Game:
+class Game_Session:
     def __init__(self, id):
         self.p1Went = False
         self.p2Went = False
