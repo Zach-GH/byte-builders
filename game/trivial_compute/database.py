@@ -12,6 +12,8 @@ import pymysql
 from dotenv import load_dotenv
 import os
 
+load_dotenv('db/database.env')
+
 db_config = {
     'host': os.getenv('DB_HOST'),
     'user': os.getenv('DB_USER'),
