@@ -19,7 +19,7 @@ db_config = {
     'user': os.getenv('DB_USER'),
     'password': os.getenv('DB_PASSWORD'),
     'database': os.getenv('DB_NAME')
-    }
+}
 
 class Database:
     """
@@ -28,6 +28,9 @@ class Database:
     def __init__(self, app):
         self.app = app
         self.root = tk.Tk()
+        self.category_var = tk.StringVar()
+        self.question_entry = tk.Entry(self.root)
+        self.answer_entry = tk.Entry(self.root)
 
     # Function to fetch categories from the database
     def fetch_categories(self):
@@ -138,17 +141,14 @@ class Database:
 
         # Create and place the widgets
         tk.Label(self.root, text="Category").grid(row=0, column=0, padx=10, pady=10)
-        category_var = tk.StringVar()
-        category_dropdown = ttk.Combobox(self.root, textvariable=category_var, values=category_names)
+        category_dropdown = ttk.Combobox(self.root, textvariable=self.category_var, values=category_names)
         category_dropdown.grid(row=0, column=1, padx=10, pady=10)
 
         tk.Label(self.root, text="Question").grid(row=1, column=0, padx=10, pady=10)
-        question_entry = tk.Entry(self.root)
-        question_entry.grid(row=1, column=1, padx=10, pady=10)
+        self.question_entry.grid(row=1, column=1, padx=10, pady=10)
 
         tk.Label(self.root, text="Answer").grid(row=2, column=0, padx=10, pady=10)
-        answer_entry = tk.Entry(self.root)
-        answer_entry.grid(row=2, column=1, padx=10, pady=10)
+        self.answer_entry.grid(row=2, column=1, padx=10, pady=10)
 
         # Add the new question
         tk.Button(self.root, text="Add Question", command=self.make_question).grid(row=3, column=0, columnspan=2, pady=10)
