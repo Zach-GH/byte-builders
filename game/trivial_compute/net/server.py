@@ -74,7 +74,6 @@ class Server:
                         conn.sendall(pickle.dumps(reply))
                         reply = players[3]
                         conn.sendall(pickle.dumps(reply))
-
             except:
                 break
 
