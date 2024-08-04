@@ -1,110 +1,149 @@
 """
-Zachary Meisner
-Steven Qian
+Madeline Gyllenhoff
 database.py
 
-Add module docstring here
+GUI to add questions to the database. Database is specified in database.env.
 """
 
-import sys
-from settings import (pg, DGUI_RES, FPS, BTN_W_LOC, BTN_W, BTN_H, DGUI_COLOR)
-from components import Button, Text
-
-resolution = DGUI_RES
-res_type = pg.RESIZABLE
+# Import everything needed to make GUI and load in .env file
+import tkinter as tk
+from tkinter import ttk, messagebox
+import pymysql
+from dotenv import load_dotenv
+import os
 
 class Database:
     """
     Database class to handle the database UI and interactions.
     """
     def __init__(self, app, screen=None):
-        pg.init()
-        pg.display.set_caption('Byte-Builders Database')
         self.app = app
-        self.screen = screen or pg.display.set_mode(resolution, res_type)
-        self.res = (self.x, self.y) = self.screen.get_size()
-        self.clock = pg.time.Clock()
-        self.text_list = [("t1", 150, "Database", "white", "title")]
-        self.btn_list = [("b1", 150, (255, 255, 255), 'The :) Button')]
+        self.root = tk.Tk()
+        self.db_config = {
+            'host': os.getenv('DB_HOST'),
+            'user': os.getenv('DB_USER'),
+            'password': os.getenv('DB_PASSWORD'),
+            'database': os.getenv('DB_NAME')
+            }
 
-        for i in self.btn_list:
-            setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
-                                        i[1]), (BTN_W, BTN_H), i[3]))
+    # Function to fetch categories from the database
+    def fetch_categories(self):
+        try:
+            connection = pymysql.connect(**self.db_config)
+            cursor = connection.cursor()
+            cursor.execute("SELECT categoryID, categoryName FROM Categories")
+            categories = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return categories
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
+            return []
 
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            if i[3] == "The :) Button":
-                button.update_size((50, 50))
-        
-        for i in self.text_list:
-            setattr(self, i[0], Text(self, i[1], i[2], i[3]))
+    # Function to add a question to the database
+    def add_question(self, category_id, question_content, answer_content):
+        try:
+            # Connect to the database
+            connection = pymysql.connect(**self.db_config)
+            cursor = connection.cursor()
 
-    def check_database_events(self, pos):
-        """
-        Add function docstring here.
-        """
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            if button.is_clicked(pos):
-                button.was_clicked()
-                if i[3] == "The :) Button":
-                    print("Database!")
+            # Insert the new question into the Questions table
+            insert_query = """
+                INSERT INTO Questions (questionContent, answerContent, categoryID)
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(insert_query, (question_content, answer_content, category_id))
 
-    def check_events(self):
-        """
-        Add function docstring here.
-        """
-        for event in pg.event.get():
-            if (event.type == pg.QUIT or (event.type == pg.KEYDOWN
-                                          and event.key == pg.K_ESCAPE)):
-                pg.quit()
-                sys.exit()
-            elif event.type == pg.MOUSEBUTTONUP:
-                    pos = pg.mouse.get_pos()
-                    self.check_database_events(pos)
+            # Commit the transaction
+            connection.commit()
 
-    def set_button_position(self, button_name, x, y):
-        """
-        Set the position of a button dynamically.
-        """
-        button = getattr(self, button_name)
-        button.update_position((x, y))
+            # Close the cursor and connection
+            cursor.close()
+            connection.close()
 
-    def draw_database_ui(self):
-        """
-        Draw the database UI, including text and buttons.
-        """
-        self.screen.fill(color=DGUI_COLOR)
+            print("Question added successfully!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
-        for i in self.text_list:
-            text = getattr(self, i[0])
-            if i[4] == "title":
-                text.draw(self.screen, 1, 0)
+    def get_category_id(self, category_name):
+        try:
+            # Connect to the database
+            connection = pymysql.connect(**self.db_config)
+            cursor = connection.cursor()
 
-        for i in self.btn_list:
-            button = getattr(self, i[0])
-            button.draw(self.screen, i[2])
+            # Execute the query to fetch the categoryID
+            query = "SELECT categoryID FROM Categories WHERE categoryName = %s"
+            cursor.execute(query, (category_name,))
+            result = cursor.fetchone()
 
-        self.set_button_position("b1", 225, 200)
-        pg.display.flip()
+            # If the categoryID is found, return it
+            if result:
+                category_id = result[0]
+            else:
+                # Insert the new category into the Categories table
+                insert_query = "INSERT INTO Categories (categoryName) VALUES (%s)"
+                cursor.execute(insert_query, (category_name,))
+                connection.commit()
 
-    def update(self):
-        """
-        Update the Question_Gui menu.
-        """
-        self.check_events()
-        self.clock.tick(FPS)
+                # Retrieve the new categoryID
+                cursor.execute(query, (category_name,))
+                result = cursor.fetchone()
+                category_id = result[0]
 
-    def draw(self):
-        """
-        Add function docstring here.
-        """
-        self.draw_database_ui()
+            # Close the cursor and connection
+            cursor.close()
+            connection.close()
+
+            return category_id
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+    # Function to handle the button click and print the inputs
+    def make_question(self):
+        category_name = self.category_var.get()
+        question_content = self.question_entry.get()
+        answer_content = self.answer_entry.get()
+
+        if category_name and question_content and answer_content:
+            category_id = self.get_category_id(category_name)
+            self.add_question(category_id, question_content, answer_content)
+            messagebox.showinfo("Success", "Question added to database!")
+        else:
+            messagebox.showwarning("Input Error", "All fields are required!")
+
+    # Function to handle the exit button click
+    def exit_gui(self):
+        self.root.destroy()
 
     def run(self):
         """
         Add function docstring here.
         """
-        while True:
-            self.update()
-            self.draw()
+        # Create the main window
+        self.root.title("Add Question to Database")
+
+        # Fetch categories from the database
+        categories = self.fetch_categories()
+        category_names = [cat[1] for cat in categories]
+
+        # Create and place the widgets
+        tk.Label(self.root, text="Category").grid(row=0, column=0, padx=10, pady=10)
+        category_var = tk.StringVar()
+        category_dropdown = ttk.Combobox(self.root, textvariable=category_var, values=category_names)
+        category_dropdown.grid(row=0, column=1, padx=10, pady=10)
+
+        tk.Label(self.root, text="Question").grid(row=1, column=0, padx=10, pady=10)
+        question_entry = tk.Entry(self.root)
+        question_entry.grid(row=1, column=1, padx=10, pady=10)
+
+        tk.Label(self.root, text="Answer").grid(row=2, column=0, padx=10, pady=10)
+        answer_entry = tk.Entry(self.root)
+        answer_entry.grid(row=2, column=1, padx=10, pady=10)
+
+        # Add the new question
+        tk.Button(self.root, text="Add Question", command=self.make_question).grid(row=3, column=0, columnspan=2, pady=10)
+        tk.Button(self.root, text="Exit", command=self.exit_gui).grid(row=4, column=0, columnspan=2, pady=10)
+
+        # Run the main event loop
+        self.root.mainloop()
