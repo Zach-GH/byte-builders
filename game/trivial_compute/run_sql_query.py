@@ -1,6 +1,6 @@
 import os
 import pymysql
-from dotenv import load_dotenv
+import dotenv
 
 def run_sql_query(category):
     """
@@ -13,7 +13,7 @@ def run_sql_query(category):
     - List[Tuple[Any]]: List of tuples containing the query results.
     """
     # Load environment variables from .env file
-    load_dotenv(dotenv_path='db/database.env')
+    dotenv.load_dotenv(dotenv_path='db/database.env')
 
     # Get database credentials from environment variables
     db_host = os.getenv('DB_HOST')

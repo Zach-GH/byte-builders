@@ -7,14 +7,17 @@ Intended file for just the grid so make gameboard easier to read.
 
 from settings import (pg, GRID_ROWS, GRID_COLS, GRID_COLOR, CELL_SIZE)
 from components import Text
+from dice import Dice
 
 class Grid:
     """
     Grid class to handle the grid.
     """
+
     def __init__(self, app):
         self.app = app
         self.screen = self.app.screen
+        self.dice = Dice(self)
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
@@ -52,6 +55,10 @@ class Grid:
         pass
 
     def roll_again_action(self):
+        self.dice.roll_dice()
+        self.dice.was_clicked()
+        self.dice.draw_dice(self.get_right() + 50, self.get_top() + 5, 100)
+        pg.display.flip()
         print("Roll Again!")
 
     def hq_action(self):
@@ -140,6 +147,18 @@ class Grid:
                 row_list.append(cell)
             self.grid.append(row_list)
 
+    def get_left(self):
+        return self.center_x
+
+    def get_right(self):
+        return self.center_x + (GRID_COLS * CELL_SIZE)
+
+    def get_top(self):
+        return self.center_y
+
+    def get_bottom(self):
+        return self.center_y + (GRID_ROWS * CELL_SIZE)
+
     def draw_grid(self, p1, p2, p3, p4):
         """
         Draw the game grid.
@@ -181,15 +200,3 @@ class Grid:
         p2.draw(self.screen, self.center_x, self.center_y)
         p3.draw(self.screen, self.center_x, self.center_y)
         p4.draw(self.screen, self.center_x, self.center_y)
-
-    def get_left(self):
-        return self.center_x
-
-    def get_right(self):
-        return self.center_x + (GRID_COLS * CELL_SIZE)
-
-    def get_top(self):
-        return self.center_y
-
-    def get_bottom(self):
-        return self.center_y + (GRID_ROWS * CELL_SIZE)
