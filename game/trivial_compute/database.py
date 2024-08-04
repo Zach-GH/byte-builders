@@ -12,24 +12,27 @@ import pymysql
 from dotenv import load_dotenv
 import os
 
+db_config = {
+    'host': os.getenv('DB_HOST'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'database': os.getenv('DB_NAME')
+    }
+
 class Database:
     """
     Database class to handle the database UI and interactions.
     """
-    def __init__(self, app, screen=None):
+    def __init__(self, app):
         self.app = app
         self.root = tk.Tk()
-        self.db_config = {
-            'host': os.getenv('DB_HOST'),
-            'user': os.getenv('DB_USER'),
-            'password': os.getenv('DB_PASSWORD'),
-            'database': os.getenv('DB_NAME')
-            }
 
     # Function to fetch categories from the database
     def fetch_categories(self):
+        global db_config
+
         try:
-            connection = pymysql.connect(**self.db_config)
+            connection = pymysql.connect(**db_config)
             cursor = connection.cursor()
             cursor.execute("SELECT categoryID, categoryName FROM Categories")
             categories = cursor.fetchall()
@@ -42,9 +45,11 @@ class Database:
 
     # Function to add a question to the database
     def add_question(self, category_id, question_content, answer_content):
+        global db_config
+
         try:
             # Connect to the database
-            connection = pymysql.connect(**self.db_config)
+            connection = pymysql.connect(**db_config)
             cursor = connection.cursor()
 
             # Insert the new question into the Questions table
@@ -66,9 +71,11 @@ class Database:
             print(f"An error occurred: {e}")
 
     def get_category_id(self, category_name):
+        global db_config
+
         try:
             # Connect to the database
-            connection = pymysql.connect(**self.db_config)
+            connection = pymysql.connect(**db_config)
             cursor = connection.cursor()
 
             # Execute the query to fetch the categoryID
