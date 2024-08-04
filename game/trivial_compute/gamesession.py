@@ -14,7 +14,7 @@ than a template waiting to be filled out for the time being.
 
 """
 
-class Game:
+class GameSession:
     def __init__(self, id):
         self.p1Went = False
         self.p2Went = False
