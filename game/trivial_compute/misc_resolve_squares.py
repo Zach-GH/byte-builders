@@ -1,5 +1,5 @@
-def resolve_square(Player):
-    event = get_square()
+def resolve_square(Player, Square):
+    event = get_square(Square)
     if "category" in event:
         event_parts = event.split('|')
         correct = run_question_gui_instance(event_parts[1])
