@@ -104,8 +104,10 @@ class GameBoard:
         # TODO: better UI button
         # Display category options
         for idx, category in enumerate(self.all_categories):
+            """
             category_text = font.render(category, True, (0, 0, 0))
             self.screen.blit(category_text, (self.center_x - category_text.get_width() // 2, y_offset + idx * 40))
+            """
             # Create a button for each category
             category_btn = Button(self, (self.center_x + 200, y_offset + idx * 40), (BTN_W, BTN_H), category)
             setattr(self, f'category_btn_{idx}', category_btn)
