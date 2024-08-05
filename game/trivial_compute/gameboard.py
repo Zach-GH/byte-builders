@@ -88,7 +88,7 @@ class GameBoard:
         """
         button = getattr(self, button_name)
         button.update_position((x, y))
-
+    # KEYI: ===================
     def draw_category_selection_ui(self):
         """
         Draw the UI for selecting categories.
@@ -104,10 +104,7 @@ class GameBoard:
         # TODO: better UI button
         # Display category options
         for idx, category in enumerate(self.all_categories):
-            """
-            category_text = font.render(category, True, (0, 0, 0))
-            self.screen.blit(category_text, (self.center_x - category_text.get_width() // 2, y_offset + idx * 40))
-            """
+
             # Create a button for each category
             category_btn = Button(self, (self.center_x + 200, y_offset + idx * 40), (BTN_W, BTN_H), category)
             setattr(self, f'category_btn_{idx}', category_btn)
@@ -132,7 +129,7 @@ class GameBoard:
         self.set_button_position("b4", self.grid_left + 185, self.grid_top + 300)
         self.set_button_position("b5", self.grid_left + 385, self.grid_top + 300)
         self.set_button_position("b6", self.grid_left + 585, self.grid_top + 300)
-
+# ================
     def draw_gameboard_ui(self, p1, p2, p3, p4):
         """
         Draw the gameboard UI, including text and buttons.
