@@ -24,17 +24,27 @@ class GameBoard:
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.grid = Grid(self)
+        """
         self.history_configured = False
         self.science_configured = False
         self.history_color = ""
         self.science_color = ""
+        """
+        # KEYI: variables for choosing colors for categories======
+        self.categories = ["History", "Science", "Geography", "Math"]
+        self.colors = ["red", "yellow", "blue", "green"]
+        self.category_colors = {}
+        self.current_category_index = 0
         self.configured = False
+        # ======
         self.grid_left = self.grid.get_left()
         self.grid_right = self.grid.get_right()
         self.grid_top = self.grid.get_top()
         self.grid_bottom = self.grid.get_bottom()
-        self.text_list = [("t1", 150, "History", "white", "His"),
-                          ("t2", 150, "Science", "white", "Sci")]
+        self.text_list = [("t1", 150, self.categories[0], "white", self.categories[0][:3]),
+                          ("t2", 150, self.categories[1], "white", self.categories[1][:3]),
+                          ("t3", 150, self.categories[2], "white", self.categories[2][:3]),
+                          ("t4", 150, self.categories[3], "white", self.categories[3][:3])]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Q'),
                          ("b3", 150, (255, 255, 255), 'Red'),
@@ -125,59 +135,27 @@ class GameBoard:
                     print("Add logic to run Help screen")
                 elif i[0] == "b2":
                     self.app.app.app.run_question_gui()
-                elif i[0] == "b3":
-                    if not self.history_configured:
-                        print("History is Red")
-                        self.history_color = "red"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Red")
-                        self.science_color = "red"
+                # Keyi ==========
+                elif i[0] in ["b3", "b4", "b5", "b6"]:
+                    selected_color = i[3].lower()
+                    self.category_colors[self.categories[self.current_category_index]] = selected_color
+                    self.current_category_index += 1
+                    if self.current_category_index >= len(self.categories):
                         self.configured = True
-                elif i[0] == "b4":
-                    if not self.history_configured:
-                        print("History is Yellow")
-                        self.history_color = "yellow"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Yellow")
-                        self.science_color = "yellow"
-                        self.configured = True
-                elif i[0] == "b5":
-                    if not self.history_configured:
-                        print("History is Blue")
-                        self.history_color = "blue"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Blue")
-                        self.science_color = "blue"
-                        self.configured = True
-                elif i[0] == "b6":
-                    if not self.history_configured:
-                        print("History is Green")
-                        self.history_color = "green"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Green")
-                        self.science_color = "green"
-                        self.configured = True
-
+                    print(f"{self.categories[self.current_category_index - 1]} is {selected_color}")
+                # ============
     def draw(self, p1, p2, p3, p4):
         """
         Add function docstring here.
         """
         if not self.configured:
             self.draw_configuration_ui()
-            if not self.history_configured:
-                for i in self.text_list:
-                    text = getattr(self, i[0])
-                    if i[0] == "t1":
-                        text.draw(self.screen, 1, 0)
-            elif self.history_configured and not self.configured:
-                for i in self.text_list:
-                    text = getattr(self, i[0])
-                    if i[0] == "t2":
-                        text.draw(self.screen, 1, 0)
+            # KEYI: select category ui ==========
+            if self.current_category_index < len(self.categories) + 1:
+                i = self.text_list[self.current_category_index - 1]
+                text = getattr(self, i[0])
+                text.draw(self.screen, 1, 0)
+            # TODO: Handle later interaction after choose colors.
         else:
             self.draw_gameboard_ui(p1, p2, p3, p4)
             self.dice.draw_dice(self.grid_right + 50, self.grid_top + 5, 100)
