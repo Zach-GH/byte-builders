@@ -37,6 +37,8 @@ def run_sql_query(category):
                 FROM Questions
                 JOIN Categories ON Questions.categoryID = Categories.categoryID
                 WHERE Categories.categoryName = %s
+                ORDER BY RAND()
+                LIMIT 1
             """
             cursor.execute(query, (category,))
 
