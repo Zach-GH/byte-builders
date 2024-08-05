@@ -8,11 +8,13 @@ Add module docstring here
 from settings import pg, CELL_SIZE, GRID_COLS, GRID_ROWS
 
 class Player:
-    def __init__(self, start_pos, color, name):
+    def __init__(self, start_pos, color, name, id):
         self.pos = start_pos
         self.color = color
         self.name = name
         self.size = CELL_SIZE
+        self.id = id
+        self.configured = False
 
     def render_text_to_circle(self, screen, text, font_size, text_color,
                               center):
@@ -110,3 +112,18 @@ class Player:
 
     def get_position(self):
         return self.pos
+
+    def get_name(self):
+        return self.name
+
+    def set_name(self, name):
+        self.name = name
+
+    def get_id(self):
+        return self.id
+
+    def get_configured(self):
+        return self.configured
+
+    def set_configured(self):
+        self.configured = True

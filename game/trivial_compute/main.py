@@ -13,12 +13,12 @@ file in addition to the trivial_compute.py file which will house core logic.
 import sys
 import multiprocessing as mp
 from settings import (pg, MAX_WIN_RES, MED_WIN_RES, MIN_WIN_RES, FPS,
-                          MENU_COLOR, OPTIONS_COLOR, TROPHIES_COLOR,
+                          MENU_COLOR, OPTIONS_COLOR, HOST_COLOR,
                           TEAM_COLOR, QGUI_RES)
 from waiting_room import WaitingRoom
 from menu import Menu
 from options import Options
-from trophies import Trophies
+from host import Host
 from team import Team
 from question_gui import Question_Gui, run_question_gui_instance
 from database import Database
@@ -56,12 +56,13 @@ while A < n:
         A += 1
     elif (sys.argv[A] == "-d" and A + 1 < n):
         display = sys.argv[A + 1].lower()
-        if display in ["menu", "waitingroom", "options", "trophies", "team"]:
+        if display in ["menu", "waitingroom", "options", "host", "team"]:
             game_display = display
         A += 1
+    elif (sys.argv[A] == "-dev"):
+        dev = True
     elif (sys.argv[A] == "-m"):
         mute = True
-        A += 1
     elif (sys.argv[A] == "-s"):
         server = True
         A += 1
@@ -70,9 +71,6 @@ while A < n:
         A += 1
     elif (sys.argv[A] == "-db"):
         q_database = True
-        A += 1
-    elif (sys.argv[A] == "-dev"):
-        dev = True
         A += 1
     A += 1
 
@@ -83,14 +81,14 @@ class Game:
     """
     def __init__(self, app):
         self.app = app
-        self.dev = self.app.dev
+        self.dev = dev
         self.display = game_display
         self.mute = mute
         self.nav = {
             'menu': Menu(self),
             'waitingroom': WaitingRoom(self),
             'options': Options(self),
-            'trophies': Trophies(self),
+            'host': Host(self),
             'team': Team(self)
         }
         self.scale = pg.transform.scale(self.nav['menu'].bg_img,
@@ -120,8 +118,8 @@ class Game:
                         elif (not self.nav['menu'].beats.is_playing()
                               and self.mute == False):
                             self.nav['menu'].beats.start_music()
-                    elif i[3] == "Trophies":
-                        self.display = "trophies"
+                    elif i[3] == "Host":
+                        self.display = "host"
                     elif i[3] == "Team":
                         self.display = "team"
                     elif i[3] == "Quit":
@@ -141,20 +139,14 @@ class App:
     """
     Add class docstring here.
     """
-    global dev
-
     def __init__(self):
         pg.init()
         pg.display.set_caption('Byte-Builders Trivial Compute')
         self.screen = pg.display.set_mode(resolution, res_type)
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
-        self.dev = False
         self.game = Game(self)
         self.server = Server(self)
-
-        if dev == True:
-            self.dev = True
 
     def update(self):
         """
@@ -166,8 +158,8 @@ class App:
             self.game.nav['waitingroom'].update()
         elif self.game.display == "options":
             self.game.nav['options'].update()
-        elif self.game.display == "trophies":
-            self.game.nav['trophies'].update()
+        elif self.game.display == "host":
+            self.game.nav['host'].update()
         elif self.game.display == "team":
             self.game.nav['team'].update()
         self.clock.tick(FPS)
@@ -190,9 +182,9 @@ class App:
             self.screen.fill(color=OPTIONS_COLOR)
             self.game.nav['options'].draw()
             pg.display.flip()
-        elif self.game.display == "trophies":
-            self.screen.fill(color=TROPHIES_COLOR)
-            self.game.nav['trophies'].draw()
+        elif self.game.display == "host":
+            self.screen.fill(color=HOST_COLOR)
+            self.game.nav['host'].draw()
             pg.display.flip()
         elif self.game.display == "team":
             self.screen.fill(color=TEAM_COLOR)
@@ -208,10 +200,20 @@ class App:
                                           and event.key == pg.K_ESCAPE)):
                 pg.quit()
                 sys.exit()
+            elif (event.type == pg.KEYDOWN):
+                if self.game.nav['waitingroom'].active:
+                    if event.key == pg.K_BACKSPACE:
+                        self.game.nav['waitingroom'].user_text = self.game.nav['waitingroom'].user_text[:-1]
+                    else:
+                        self.game.nav['waitingroom'].user_text += event.unicode
             elif event.type == pg.MOUSEBUTTONUP:
                 pos = pg.mouse.get_pos()
                 if self.game.display == "waitingroom":
                     self.game.nav['waitingroom'].handle_button_click(pos)
+                    if self.game.nav['waitingroom'].input_rect.collidepoint(event.pos):
+                        self.game.nav['waitingroom'].active = True
+                    else:
+                        self.game.nav['waitingroom'].active = False
                 else:
                     self.game.check_action_events(pos)
             elif event.type == pg.VIDEORESIZE:

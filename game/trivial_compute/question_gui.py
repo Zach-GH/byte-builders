@@ -65,7 +65,6 @@ class Question_Gui:
                 result = run_sql_query(i[3])
                 for question, answer in result:
                     self.current_question[question_id] = (question, answer)
-                    # self.next_id += 1
                 first_question = 1
                 first_question = self.current_question.get(first_question, None)
                 for i in self.text_list:

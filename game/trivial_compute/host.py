@@ -1,22 +1,23 @@
 """
 Zachary Meisner
-trophies.py
+Host.py
 
-Add module docstring here
+Intended for hosting your own server
+so you do not have to run it separately.
 """
 
 from settings import pg, BTN_W_LOC, BTN_W, BTN_H
 from components import Button, Text
 
-class Trophies:
+class Host:
     """
-    Trophies class to handle the trophies UI and interactions.
+    Host class to handle the Host UI and interactions.
     """
     def __init__(self, app):
         self.app = app
         self.screen = self.app.app.screen
         self.x, self.y = (self.app.app.x, self.app.app.y)
-        self.text_list = [("t1", 150, "Trophies", "white", "title")]
+        self.text_list = [("t1", 150, "Host", "white", "title")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back')]
 
         for i in self.btn_list:
@@ -33,9 +34,9 @@ class Trophies:
         button = getattr(self, button_name)
         button.update_position((x, y))
 
-    def draw_trophies_ui(self):
+    def draw_host_ui(self):
         """
-        Draw the trophies UI, including text and buttons.
+        Draw the host UI, including text and buttons.
         """
         for i in self.text_list:
             text = getattr(self, i[0])
@@ -57,7 +58,7 @@ class Trophies:
 
     def update(self):
         """
-        Update the Trophies menu.
+        Update the host menu.
         """
         mouse_pos = pg.mouse.get_pos()
         mouse_click = pg.mouse.get_pressed()
@@ -72,4 +73,4 @@ class Trophies:
         """
         Add function docstring here.
         """
-        self.draw_trophies_ui()
+        self.draw_host_ui()
