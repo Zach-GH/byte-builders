@@ -11,7 +11,6 @@ class Network:
         self.p = self.connect()
 
     def get_local_ip(self):
-        #hostname = socket.gethostname()
         local_ip = socket.gethostbyname('localhost')
         return local_ip
 
