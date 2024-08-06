@@ -24,19 +24,27 @@ class GameBoard:
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
         self.grid = Grid(self)
-        self.history_configured = False
-        self.science_configured = False
         self.history_color = ""
         self.science_color = ""
+        self.geography_color = ""
+        self.math_color = ""
+        self.all_categories =  ["History", "Science", "Geography", "Math"]
+        self.phase = "categories"
+        # KEYI: variables for choosing colors for categories
+        # ======
+        self.categories = []
+        self.colors = ["red", "yellow", "blue", "green"]
+        self.category_colors = {}
+        self.current_category_index = 0
         self.configured = False
         self.help = False
+        # ======
         self.grid_left = self.grid.get_left()
         self.grid_right = self.grid.get_right()
         self.grid_top = self.grid.get_top()
         self.grid_bottom = self.grid.get_bottom()
-        self.text_list = [("t1", 150, "History", "white", "His"),
-                          ("t2", 150, "Science", "white", "Sci"),
-                          ("t3", 150, "Help", "white", "H")]
+        self.category_list = []
+        self.text_list = [("t1", 150, "Help", "white", "H")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
                          ("b2", 150, (255, 255, 255), 'Q'),
                          ("b3", 150, (255, 255, 255), 'Red'),
@@ -44,6 +52,10 @@ class GameBoard:
                          ("b5", 150, (255, 255, 255), 'Blue'),
                          ("b6", 150, (255, 255, 255), 'Green'),
                          ("b7", 150, (255, 255, 255), 'Back')]
+
+        # KEYI:  Create a button for submitting selected categories
+        self.submit_btn = Button(self, (self.center_x, self.grid_top + 500),
+                                 (BTN_W, BTN_H), 'Submit')
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -88,7 +100,7 @@ class GameBoard:
         """
         for i in self.text_list:
             text = getattr(self, i[0])
-            if i[0] == "t3":
+            if i[0] == "t1":
                 text.draw(self.screen, 1, 0)
 
         for i in self.btn_list:
@@ -98,19 +110,60 @@ class GameBoard:
 
         self.set_button_position("b7", self.grid_left - 165, self.grid_top)
 
+    # KEYI: ===================
+    def draw_category_selection_ui(self):
+        """
+        Draw the UI for selecting categories.
+        """
+        font = pg.font.Font(None, 50)
+        y_offset = self.grid_top + 50
+
+        # Display instruction
+        instruction_text = font.render("Select Four Categories:", True,
+                                       (255, 255, 255))
+        self.screen.blit(instruction_text, (self.center_x -
+                                            instruction_text.get_width()
+                                            // 2, y_offset))
+
+        y_offset += 70
+        # TODO: better UI button
+        # Display category options
+        for idx, category in enumerate(self.all_categories):
+
+            # Create a button for each category
+            category_btn = Button(self, (self.center_x + 200, y_offset
+                                         + idx * 40), (BTN_W, BTN_H), category)
+            setattr(self, f'category_btn_{idx}', category_btn)
+            category_btn.draw(self.screen, (255, 255, 255))
+
     def draw_configuration_ui(self):
         """
         Draw the configuration UI, including text and buttons.
         """
+        self.category_list = [("c1", 150, self.categories[0], "white",
+                                      self.categories[0][:3]),
+                          ("c2", 150, self.categories[1], "white",
+                                      self.categories[1][:3]),
+                          ("c3", 150, self.categories[2], "white",
+                                      self.categories[2][:3]),
+                          ("c4", 150, self.categories[3], "white",
+                                      self.categories[3][:3])]
+        for i in self.category_list:
+            setattr(self, i[0], Text(self, i[1], i[2], i[3]))
+
         for i in self.btn_list:
             if i[0] != "b1" and i[0] != "b2" and i[0] != "b7":
                 button = getattr(self, i[0])
                 button.draw(self.screen, i[2])
 
         self.set_button_position("b3", self.grid_left, self.grid_top + 300)
-        self.set_button_position("b4", self.grid_left + 185, self.grid_top + 300)
-        self.set_button_position("b5", self.grid_left + 385, self.grid_top + 300)
-        self.set_button_position("b6", self.grid_left + 585, self.grid_top + 300)
+        self.set_button_position("b4", self.grid_left + 185,
+                                 self.grid_top + 300)
+        self.set_button_position("b5", self.grid_left + 385,
+                                 self.grid_top + 300)
+        self.set_button_position("b6", self.grid_left + 585,
+                                 self.grid_top + 300)
+# ================
 
     def draw_gameboard_ui(self, p1, p2, p3, p4):
         """
@@ -132,6 +185,8 @@ class GameBoard:
         """
         Add function docstring here.
         """
+        host = p1.get_id()
+
         pos = pg.mouse.get_pos()
         if self.dice.is_clicked(pos):
             self.dice.roll_dice()
@@ -142,60 +197,52 @@ class GameBoard:
                 button.was_clicked()
                 if i[0] == "b1":
                     self.help = True
-                    print("self.help is", self.help)
                 elif i[0] == "b2":
                     self.app.app.app.run_question_gui()
-                elif i[0] == "b3":
-                    if not self.history_configured:
-                        print("History is Red")
-                        self.history_color = "red"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Red")
-                        self.science_color = "red"
-                        p1.set_configured()
-                        p2.set_configured()
-                        p3.set_configured()
-                        p4.set_configured()
-                elif i[0] == "b4":
-                    if not self.history_configured:
-                        print("History is Yellow")
-                        self.history_color = "yellow"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Yellow")
-                        self.science_color = "yellow"
-                        p1.set_configured()
-                        p2.set_configured()
-                        p3.set_configured()
-                        p4.set_configured()
-                elif i[0] == "b5":
-                    if not self.history_configured:
-                        print("History is Blue")
-                        self.history_color = "blue"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Blue")
-                        self.science_color = "blue"
-                        p1.set_configured()
-                        p2.set_configured()
-                        p3.set_configured()
-                        p4.set_configured()
-                elif i[0] == "b6":
-                    if not self.history_configured:
-                        print("History is Green")
-                        self.history_color = "green"
-                        self.history_configured = True
-                    elif self.history_configured and not self.configured:
-                        print("Science is Green")
-                        self.science_color = "green"
-                        p1.set_configured()
-                        p2.set_configured()
-                        p3.set_configured()
-                        p4.set_configured()
+                # Keyi ==========
+                # TODO: handle case user select same color
+                elif i[0] in ["b3", "b4", "b5", "b6"]:
+                    selected_color = i[3].lower()
+                    if self.current_category_index < len(self.categories):
+                        category = self.categories[self.current_category_index]
+                        self.category_colors[category] = selected_color
+                        if category == "History":
+                            self.history_color = selected_color
+                            print("history color is", self.history_color)
+                        elif category == "Science":
+                            self.science_color = selected_color
+                            print("science_color is", self.science_color)
+                        elif category == "Geography":
+                            self.geography_color = selected_color
+                            print("geography color is", self.geography_color)
+                        elif category == "Math":
+                            self.math_color = selected_color
+                            print("math color is", self.math_color)
+                        self.current_category_index += 1
+                        if self.current_category_index >= len(self.categories):
+                            self.configured = True
+                            p1.set_configured()
+                            p2.set_configured()
+                            p3.set_configured()
+                            p4.set_configured()
                 elif i[0] == "b7":
                     self.help = False
-                    print("self.help is", self.help)
+
+        if host == 1 and not self.configured:
+            # ============
+            # KEYI: select categories
+            if self.phase == "categories":
+                for idx, category in enumerate(self.all_categories):
+                    category_btn = getattr(self, f'category_btn_{idx}')
+                    if category_btn.is_clicked(pos):
+                        # TODO: another click to unselect
+                        if category not in self.categories:
+                            self.categories.append(category)
+                        if len(self.categories) == 4:
+                            self.phase = "colors"
+                            self.current_category_index = 0
+                        print(f"Selected categories: {self.categories}")
+                        button.was_clicked()
 
     def update_player_name(self, player_num, pName):
         """
@@ -219,18 +266,17 @@ class GameBoard:
         if host == 1:
             self.configured = p1.get_configured()
 
-        if not self.configured and host == 1:
+        # KEYI: select category ui
+        if not self.configured and host == 1 and self.phase == "categories":
+            self.draw_category_selection_ui()
+        elif not self.configured and host == 1:
             self.draw_configuration_ui()
-            if not self.history_configured:
-                for i in self.text_list:
-                    text = getattr(self, i[0])
-                    if i[0] == "t1":
-                        text.draw(self.screen, 1, 0)
-            elif self.history_configured and not self.configured:
-                for i in self.text_list:
-                    text = getattr(self, i[0])
-                    if i[0] == "t2":
-                        text.draw(self.screen, 1, 0)
+            # KEYI: select color ui ==========
+            if self.current_category_index < len(self.categories):
+                i = self.category_list[self.current_category_index]
+                text = getattr(self, i[0])
+                text.draw(self.screen, 1, 0)
+            # TODO: Handle later interaction after choose colors.
         elif (self.help):
             self.draw_help_ui()
         else:

@@ -17,12 +17,11 @@ class Server:
         self.app = app
         self.server = self.get_local_ip()
         self.port = 5555
-        self.pnum = 1 # player num change to whatever
+        self.pnum = 2 # player num change to whatever
         self.connected_players = []
 
     def get_local_ip(self):
-        hostname = socket.gethostname()
-        local_ip = socket.gethostbyname(hostname)
+        local_ip = socket.gethostbyname('localhost')
         return local_ip
 
     def configure_player_count(self):
