@@ -4,3 +4,5 @@ __pycache__
 game/*/build
 game/*/dist
 release
+.idea
+.vscode
