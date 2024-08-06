@@ -10,6 +10,7 @@ from settings import pg, CELL_SIZE, GRID_COLS, GRID_ROWS
 class Player:
     def __init__(self, start_pos, color, name, id):
         self.pos = start_pos
+        self.past_pos = start_pos
         self.color = color
         self.name = name
         self.size = CELL_SIZE
@@ -32,15 +33,46 @@ class Player:
             y_offset += text_surface.get_height()
 
     def move(self, direction):
+        self.past_pos = self.pos
+
         if direction == 'LEFT':
             pos = (self.pos[0], max(self.pos[1] - 1, 0))
+            if self.past_pos == (8, 0) and self.pos == (8, 0):
+                pos = (max(self.pos[0] - 1, 0), self.pos[1])
+                direction = 'UP'
+            elif self.past_pos == (0, 0) and self.pos == (0, 0):
+                pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
+                direction = 'DOWN'
+
         elif direction == 'RIGHT':
             pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+            if self.past_pos == (8, 8) and self.pos == (8, 8):
+                pos = (max(self.pos[0] - 1, 0), self.pos[1])
+                direction = 'UP'
+            elif self.past_pos == (0, 8) and self.pos == (0, 8):
+                pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
+                direction = 'DOWN'
+
         elif direction == 'UP':
             pos = (max(self.pos[0] - 1, 0), self.pos[1])
+            if self.past_pos == (0, 8) and self.pos == (0, 8):
+                pos = (self.pos[0], max(self.pos[1] - 1, 0))
+                direction = 'LEFT'
+            elif self.past_pos == (0, 0) and self.pos == (0, 0):
+                pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+                direction = 'RIGHT'
+
         elif direction == 'DOWN':
             pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
-        
+            if self.past_pos == (8, 8) and self.pos == (8, 8):
+                pos = (self.pos[0], max(self.pos[1] - 1, 0))
+                direction = 'LEFT'
+            elif self.past_pos == (8, 0) and self.pos == (8, 0):
+                pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+                direction = 'RIGHT'
+        else:
+            print("Don't have a valid direction to move")
+
         if ( # top left and top right
             pos == (1, 1) or pos == (1, 2)
             or pos == (1, 3) or pos == (1, 5)
@@ -64,6 +96,18 @@ class Player:
             print("Player can't move here!", pos)
         else:
             self.pos = pos
+            if self.pos == (4, 4):
+                direction = 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+            elif self.pos == (0, 4):
+                direction = 'CHOOSE_DOWN_LEFT_RIGHT'
+            elif self.pos == (8, 4):
+                direction = 'CHOOSE_UP_LEFT_RIGHT'
+            elif self.pos == (4, 0):
+                direction = 'CHOOSE_UP_DOWN_RIGHT'
+            elif self.pos == (4, 8):
+                direction = 'CHOOSE_UP_DOWN_LEFT'
+            print("Pos is", pos)
+            return direction
 
     def draw(self, screen, center_x, center_y):
 

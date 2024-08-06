@@ -26,7 +26,10 @@ class WaitingRoom:
         self.connected = False
         self.allowUpdate = False
         self.base_font = pg.font.Font(None, 32)
-        self.user_text = ''
+        if self.dev:
+            self.user_text = ':)'
+        else:
+            self.user_text = ''
         self.input_rect = pg.Rect(self.center_x + 200, self.center_y - 390, 140, 32)
         self.color_active = pg.Color('lightskyblue3')
         self.color_passive = pg.Color('chartreuse4')

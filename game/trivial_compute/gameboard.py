@@ -6,8 +6,9 @@ Add module docstring here
 """
 
 from settings import (pg, GRID_ROWS, GRID_COLS, CELL_SIZE,
-                          BTN_W_LOC, BTN_W, BTN_H)
+                          BTN_W_LOC, BTN_W, BTN_H, MOVE)
 from components import Button, Text
+from beats import Sound_Effect
 
 from dice import Dice
 from grid import Grid
@@ -28,6 +29,7 @@ class GameBoard:
         self.science_color = ""
         self.geography_color = ""
         self.math_color = ""
+        self.direction = ""
         self.all_categories =  ["History", "Science", "Geography", "Math"]
         self.phase = "categories"
         # KEYI: variables for choosing colors for categories
@@ -53,11 +55,21 @@ class GameBoard:
                          ("b6", 150, (255, 255, 255), 'Green'),
                          ("b7", 150, (255, 255, 255), 'Back')]
 
+        self.move_sound = Sound_Effect(self, MOVE)
+        self.move_btns = [("m1", 150, (255, 255, 255), 'Up'),
+                         ("m2", 150, (255, 255, 255), 'Down'),
+                         ("m3", 150, (255, 255, 255), 'Left'),
+                         ("m4", 150, (255, 255, 255), 'Right')]
+
         # KEYI:  Create a button for submitting selected categories
         self.submit_btn = Button(self, (self.center_x, self.grid_top + 500),
                                  (BTN_W, BTN_H), 'Submit')
 
         for i in self.btn_list:
+            setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
+                                        i[1]), (BTN_W, BTN_H), i[3]))
+
+        for i in self.move_btns:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
                                         i[1]), (BTN_W, BTN_H), i[3]))
 
@@ -75,17 +87,29 @@ class GameBoard:
         cell['action']()
 
     def move_player(self, p1, p2, p3, p4, direction):
-        p1.move(direction)
-        p2.move(direction)
-        p3.move(direction)
-        p4.move(direction)
+        self.direction = p1.move(direction)
+        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT':
+            print("You must choose up down left or right")
+            self.direction = 'UP'
+        elif self.direction == 'CHOOSE_UP_DOWN_RIGHT':
+            print("You must choose up down or right")
+            self.direction = 'LEFT'
+        elif self.direction == 'CHOOSE_UP_DOWN_LEFT':
+            print("You must choose up down or left")
+            self.direction = 'RIGHT'
+        elif self.direction == 'CHOOSE_DOWN_LEFT_RIGHT':
+            print("You must choose down left or right")
+            self.direction = 'RIGHT'
+        elif self.direction == 'CHOOSE_UP_LEFT_RIGHT':
+            print("You must choose up left or right")
+            self.direction = 'UP'
 
         self.handle_player_move(p1, p1.get_position())
-        self.handle_player_move(p2, p2.get_position())
-        self.handle_player_move(p3, p3.get_position())
-        self.handle_player_move(p4, p4.get_position())
 
         self.draw(p1, p2, p3, p4)
+        self.move_sound.play()
+        pg.display.flip()
+        pg.time.delay(350)
 
     def set_button_position(self, button_name, x, y):
         """
@@ -176,8 +200,21 @@ class GameBoard:
                 button.draw(self.screen, i[2])
 
         self.set_button_position("b1", self.grid_left - 285, self.grid_top)
-        self.set_button_position("b2", self.grid_right + 30,
+        self.set_button_position("b2", self.grid_right + 160,
+                                 self.grid_top + 40)
+
+        for i in self.move_btns:
+            button = getattr(self, i[0])
+            button.draw(self.screen, i[2])
+
+        self.set_button_position("m1", self.grid_right + 30,
                                  self.grid_top + 150)
+        self.set_button_position("m2", self.grid_right + 30,
+                                 self.grid_top + 200)
+        self.set_button_position("m3", self.grid_right + 30,
+                                 self.grid_top + 250)
+        self.set_button_position("m4", self.grid_right + 30,
+                                     self.grid_top + 300)
 
         self.grid.draw_grid(p1, p2, p3, p4)
 
@@ -228,6 +265,49 @@ class GameBoard:
                 elif i[0] == "b7":
                     self.help = False
 
+        for i in self.move_btns:
+            button = getattr(self, i[0])
+            if button.is_clicked(pos):
+                button.was_clicked()
+                if i[0] == "m1":
+                    move_num = self.dice.get_num()
+                    self.direction = 'UP'
+                    for _ in range(move_num):
+                        self.move_player(p1, p2, p3, p4, self.direction)
+                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_DOWN_LEFT':
+                            print("Special UP move")
+                    print("p1 after", p1.get_position())
+                elif i[0] == "m2":
+                    move_num = self.dice.get_num()
+                    print("move_num is", move_num)
+                    print("p1 pos", p1.get_position())
+                    self.direction = 'DOWN'
+                    for _ in range(move_num):
+                        self.move_player(p1, p2, p3, p4, self.direction)
+                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_DOWN_LEFT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                            print("Special DOWN move")
+                    print("p1 after", p1.get_position())
+                elif i[0] == "m3":
+                    move_num = self.dice.get_num()
+                    print("move_num is", move_num)
+                    print("p1 pos", p1.get_position())
+                    self.direction = 'LEFT'
+                    for _ in range(move_num):
+                        self.move_player(p1, p2, p3, p4, self.direction)
+                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_LEFT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                            print("special LEFT move")
+                    print("p1 after", p1.get_position())
+                elif i[0] == "m4":
+                    move_num = self.dice.get_num()
+                    print("move_num is", move_num)
+                    print("p1 pos", p1.get_position())
+                    self.direction = 'RIGHT'
+                    for _ in range(move_num):
+                        self.move_player(p1, p2, p3, p4, self.direction)
+                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                            print("Special RIGHT move")
+                    print("p1 after", p1.get_position())
+
         if host == 1 and not self.configured:
             # ============
             # KEYI: select categories
@@ -242,7 +322,7 @@ class GameBoard:
                             self.phase = "colors"
                             self.current_category_index = 0
                         print(f"Selected categories: {self.categories}")
-                        button.was_clicked()
+                        button.choose_category()
 
     def update_player_name(self, player_num, pName):
         """

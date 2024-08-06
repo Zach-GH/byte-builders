@@ -86,3 +86,9 @@ class Dice:
         If the button was clicked, play the CLICK sound effect.
         """
         self.dice_sound.play()
+
+    def get_num(self):
+        """
+        Return dice number.
+        """
+        return self.dice_number

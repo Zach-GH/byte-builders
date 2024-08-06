@@ -46,6 +46,14 @@ CLICK= os.path.realpath(CPATH)
 CPATH = os.path.join("assets", "sounds", "Dice.mp3")
 DICE= os.path.realpath(CPATH)
 
+# https://pixabay.com/sound-effects/wooden-thud-mono-6244/
+MOVE_PATH = os.path.join("assets", "sounds", "wood-thud.mp3")
+MOVE= os.path.realpath(MOVE_PATH)
+
+# https://pixabay.com/sound-effects/closing-book-88041/
+BOOK_PATH = os.path.join("assets", "sounds", "close-book3.mp3")
+BOOK= os.path.realpath(BOOK_PATH)
+
 CELL_SIZE = 90
 GRID_SIZE = GRID_ROWS, GRID_COLS = 9, 9
 GRID_RES = GRID_ROWS * CELL_SIZE, GRID_COLS * CELL_SIZE
