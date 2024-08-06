@@ -11,7 +11,7 @@ main: main.py
 	./$@.py -r max -t full
 
 main_1440: main.py
-	./main.py -r min -t sized -m
+	./main.py -r min -t sized -m -dev
 
 main_1080: main.py
 	./main.py -r min -t sized

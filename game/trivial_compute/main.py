@@ -31,6 +31,7 @@ mute = False
 server = False
 q_gui = False
 q_database = False
+dev = False
 
 A = 1
 n = len(sys.argv)
@@ -70,6 +71,9 @@ while A < n:
     elif (sys.argv[A] == "-db"):
         q_database = True
         A += 1
+    elif (sys.argv[A] == "-dev"):
+        dev = True
+        A += 1
     A += 1
 
 
@@ -79,6 +83,7 @@ class Game:
     """
     def __init__(self, app):
         self.app = app
+        self.dev = self.app.dev
         self.display = game_display
         self.mute = mute
         self.nav = {
@@ -136,14 +141,20 @@ class App:
     """
     Add class docstring here.
     """
+    global dev
+
     def __init__(self):
         pg.init()
         pg.display.set_caption('Byte-Builders Trivial Compute')
         self.screen = pg.display.set_mode(resolution, res_type)
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
+        self.dev = False
         self.game = Game(self)
         self.server = Server(self)
+
+        if dev == True:
+            self.dev = True
 
     def update(self):
         """
