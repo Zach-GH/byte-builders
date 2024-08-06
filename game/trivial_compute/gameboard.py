@@ -145,6 +145,27 @@ class GameBoard:
                                  self.grid_top + 150)
 
         self.grid.draw_grid(p1, p2, p3, p4)
+        # KEYI: draw category square with color ================
+        # Define the size and positions for the four category squares
+        square_size = CELL_SIZE * 2
+        margin = CELL_SIZE // 2
+        center_x = self.grid_left + (GRID_COLS // 2) * CELL_SIZE - (square_size // 2)
+        center_y = self.grid_top + (GRID_ROWS // 2) * CELL_SIZE - (square_size // 2)
+
+        positions = [
+            (center_x - 1.5 * CELL_SIZE, center_y - 1.5 * CELL_SIZE),
+            (center_x + square_size + 0.5 * CELL_SIZE, center_y - 1.5 * CELL_SIZE),
+            (center_x - 1.5 * CELL_SIZE, center_y + square_size + 0.5 * CELL_SIZE),
+            (center_x + square_size + 0.5 * CELL_SIZE, center_y + square_size + 0.5 * CELL_SIZE)
+        ]
+
+        for idx, category in enumerate(self.all_categories):
+            color = pg.Color(self.colors[idx])
+            x, y = positions[idx]
+            pg.draw.rect(self.screen, color, (x, y, square_size, square_size))
+            category_text = pg.font.Font(None, 36).render(category, True, (255, 255, 255))
+            text_rect = category_text.get_rect(center=(x + square_size // 2, y + square_size // 2))
+            self.screen.blit(category_text, text_rect)
 
     def check_gameboard_events(self):
         """
