@@ -6,7 +6,7 @@ Add module docstring here
 """
 
 from settings import (pg, GRID_ROWS, GRID_COLS, CELL_SIZE,
-                          BTN_W_LOC, BTN_W, BTN_H, MOVE)
+                          BTN_W_LOC, BTN_W, BTN_H, MOVE2)
 from components import Button, Text
 from beats import Sound_Effect
 
@@ -55,7 +55,7 @@ class GameBoard:
                          ("b6", 150, (255, 255, 255), 'Green'),
                          ("b7", 150, (255, 255, 255), 'Back')]
 
-        self.move_sound = Sound_Effect(self, MOVE)
+        self.move_sound = Sound_Effect(self, MOVE2)
         self.move_btns = [("m1", 150, (255, 255, 255), 'Up'),
                          ("m2", 150, (255, 255, 255), 'Down'),
                          ("m3", 150, (255, 255, 255), 'Left'),
@@ -93,13 +93,13 @@ class GameBoard:
             self.direction = 'UP'
         elif self.direction == 'CHOOSE_UP_DOWN_RIGHT':
             print("You must choose up down or right")
-            self.direction = 'LEFT'
+            self.direction = 'RIGHT'
         elif self.direction == 'CHOOSE_UP_DOWN_LEFT':
             print("You must choose up down or left")
-            self.direction = 'RIGHT'
+            self.direction = 'LEFT'
         elif self.direction == 'CHOOSE_DOWN_LEFT_RIGHT':
             print("You must choose down left or right")
-            self.direction = 'RIGHT'
+            self.direction = 'DOWN'
         elif self.direction == 'CHOOSE_UP_LEFT_RIGHT':
             print("You must choose up left or right")
             self.direction = 'UP'
@@ -109,7 +109,7 @@ class GameBoard:
         self.draw(p1, p2, p3, p4)
         self.move_sound.play()
         pg.display.flip()
-        pg.time.delay(350)
+        pg.time.delay(500)
 
     def set_button_position(self, button_name, x, y):
         """

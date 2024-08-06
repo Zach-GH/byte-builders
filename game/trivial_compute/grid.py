@@ -139,42 +139,58 @@ class Grid:
                 row_list.append(cell)
             self.grid.append(row_list)
 
+    def draw_large_overlay(self, cell_ids):
+        """
+        Draw a large overlay covering multiple cells specified by cell_ids.
+        """
+        min_x = min_y = float('inf')
+        max_x = max_y = float('-inf')
+
+        for cell_id in cell_ids:
+            row, col = map(int, cell_id.split('-'))
+            cell = self.grid[row][col]
+            min_x = min(min_x, cell['rect'].left)
+            min_y = min(min_y, cell['rect'].top)
+            max_x = max(max_x, cell['rect'].right)
+            max_y = max(max_y, cell['rect'].bottom)
+
+        bounding_rect = pg.Rect(min_x, min_y, max_x - min_x, max_y - min_y)
+
+        # Example: Draw a semi-transparent overlay
+        overlay_color = (0, 0, 0, 128)  # RGBA: Black with 50% transparency
+        overlay_surface = pg.Surface((bounding_rect.width, bounding_rect.height), pg.SRCALPHA)
+        overlay_surface.fill(overlay_color)
+        self.screen.blit(overlay_surface, bounding_rect.topleft)
+
+        # Example: Draw some text on the overlay
+        font = pg.font.Font(None, 30)
+        overlay_text = font.render("Overlay", True, (255, 255, 255))
+        text_rect = overlay_text.get_rect(center=bounding_rect.center)
+        self.screen.blit(overlay_text, text_rect.topleft)
+
     def draw_grid(self, p1, p2, p3, p4):
         """
         Draw the game grid.
         """
+
+        white_cells = [
+            ["1-1", "1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3"],  # Top-left box
+            ["1-5", "1-6", "1-7", "2-5", "2-6", "2-7", "3-5", "3-6", "3-7"],  # Top-right box
+            ["5-1", "5-2", "5-3", "6-1", "6-2", "6-3", "7-1", "7-2", "7-3"],  # Bottom-left box
+            ["5-5", "5-6", "5-7", "6-5", "6-6", "6-7", "7-5", "7-6", "7-7"]   # Bottom-right box
+        ]
+
         for row in self.grid:
             for cell in row:
                 pg.draw.rect(self.screen, cell['color'], cell['rect'])
-                if ( # top left and top right
-                    cell['id'] == "1-1" or cell['id'] == "1-2"
-                    or cell['id'] == "1-3" or cell['id'] == "1-5"
-                    or cell['id'] == "1-6" or cell['id'] == "1-7"
-                    or cell['id'] == "2-1" or cell['id'] == "2-2"
-                    or cell['id'] == "2-3" or cell['id'] == "2-5"
-                    or cell['id'] == "2-6" or cell['id'] == "2-7"
-                    or cell['id'] == "3-1" or cell['id'] == "3-2"
-                    or cell['id'] == "3-3" or cell['id'] == "3-5"
-                    or cell['id'] == "3-6" or cell['id'] == "3-7"
-                    # bottom left or bottom right
-                    or cell['id'] == "5-1" or cell['id'] == "5-2"
-                    or cell['id'] == "5-3" or cell['id'] == "5-5"
-                    or cell['id'] == "5-6" or cell['id'] == "5-7"
-                    or cell['id'] == "6-1" or cell['id'] == "6-2"
-                    or cell['id'] == "6-3" or cell['id'] == "6-5"
-                    or cell['id'] == "6-6" or cell['id'] == "6-7"
-                    or cell['id'] == "7-1" or cell['id'] == "7-2"
-                    or cell['id'] == "7-3" or cell['id'] == "7-5"
-                    or cell['id'] == "7-6"
-                    or cell['id'] == "7-7"):
-                    pass
-                else:
-                    pass
                 
                 # Render text if available
                 if 'text' in cell:
                     self.render_text_to_rect(cell['text'], 30,
                                              cell['text_color'], cell['rect'])
+
+        for cell in white_cells:
+            self.draw_large_overlay(cell)
 
         p1.draw(self.screen, self.center_x, self.center_y)
         p2.draw(self.screen, self.center_x, self.center_y)

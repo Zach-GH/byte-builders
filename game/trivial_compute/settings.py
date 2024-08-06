@@ -50,8 +50,12 @@ DICE= os.path.realpath(CPATH)
 MOVE_PATH = os.path.join("assets", "sounds", "wood-thud.mp3")
 MOVE= os.path.realpath(MOVE_PATH)
 
+# https://pixabay.com/sound-effects/stone-dropping-6843/
+MOVE_PATH2 = os.path.join("assets", "sounds", "stone-drop.mp3")
+MOVE2= os.path.realpath(MOVE_PATH2)
+
 # https://pixabay.com/sound-effects/closing-book-88041/
-BOOK_PATH = os.path.join("assets", "sounds", "close-book3.mp3")
+BOOK_PATH = os.path.join("assets", "sounds", "close-book.mp3")
 BOOK= os.path.realpath(BOOK_PATH)
 
 CELL_SIZE = 90
