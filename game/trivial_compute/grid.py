@@ -136,7 +136,6 @@ class Grid:
                     cell['special'] = True
                 else:
                     pass
-                    # cell['color'] = (255, 255, 255) # White
                 row_list.append(cell)
             self.grid.append(row_list)
 
