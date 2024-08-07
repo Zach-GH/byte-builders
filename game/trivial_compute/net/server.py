@@ -2,16 +2,15 @@ import sys
 import socket
 from _thread import *
 import pickle
-# from game import Game
 from player import Player
 
 connected = set()
 games = {}
 
-players = [Player((0, 0), (255, 0, 0), 'P1'),
-           Player((8, 8), (0, 255, 0), 'P2'),
-           Player((0, 8), (0, 0, 255), 'P3'),
-           Player((8, 0), (255, 255, 0), 'P4')]
+players = [Player((0, 0), (255, 0, 0), 'P1', 1),
+           Player((8, 8), (0, 255, 0), 'P2', 2),
+           Player((0, 8), (0, 0, 255), 'P3', 3),
+           Player((8, 0), (255, 255, 0), 'P4', 4)]
 
 class Server:
     def __init__(self, app):
@@ -43,7 +42,7 @@ class Server:
         while True:
             # just in case we are sending too much information double num
             try:
-                data = pickle.loads(conn.recv(10000))
+                data = pickle.loads(conn.recv(5000))
                 players[player] = data
 
                 if not data:
@@ -64,7 +63,7 @@ class Server:
                         conn.sendall(pickle.dumps(reply))
                         reply = players[2]
                         conn.sendall(pickle.dumps(reply))
-                    if self.pnum == 3:
+                    if self.pnum == 4:
                         reply = players[0]
                         conn.sendall(pickle.dumps(reply))
                         reply = players[1]

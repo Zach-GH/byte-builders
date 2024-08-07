@@ -1,6 +1,6 @@
 """
 Zachary Meisner
-game.py
+gamesession.py
 
 Please note that none of this file accurately pertains
 to the logic we are going to need to provide.
@@ -51,7 +51,7 @@ class GameSession:
         p1 = self.moves[0].upper()[0] # get the first letter of the move
         p2 = self.moves[1].upper()[0]
 
-        # winner is -1 because there could be a tiet
+        # winner is -1 because there could be a tie
         winner = -1
         if p1 == "R" and p2 == "S":
             winner = 0

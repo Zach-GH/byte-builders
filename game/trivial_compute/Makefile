@@ -1,6 +1,6 @@
 # -r game resolution: max, med, min
 # -t resolution type: full, sized, windowed
-# -d game display: menu, waitingroom, options, trophies, team
+# -d game display: menu, waitingroom, options, host, team
 # -m Start the game with the music muted.
 # -s Run server
 # -g Run standalone question gui
@@ -11,7 +11,7 @@ main: main.py
 	./$@.py -r max -t full
 
 main_1440: main.py
-	./main.py -r min -t sized -m -dev
+	./main.py -r min -t sized -dev -m
 
 main_1080: main.py
 	./main.py -r min -t sized

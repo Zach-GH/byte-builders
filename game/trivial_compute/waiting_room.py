@@ -6,7 +6,6 @@ Add module docstring here
 """
 
 import sys
-import threading as t
 from settings import pg, PLAY_COLOR, BTN_W_LOC, BTN_W, BTN_H
 from net.network import Network
 from components import Button, Text
@@ -27,19 +26,18 @@ class WaitingRoom:
         self.connected = False
         self.allowUpdate = False
         self.base_font = pg.font.Font(None, 32)
-        self.user_text = ''
-        self.input_rect = pg.Rect(200, 200, 140, 32)
+        self.user_text = 'Name'
+        self.input_rect = pg.Rect(self.center_x + 200, self.center_y - 390, 140, 32)
         self.color_active = pg.Color('lightskyblue3')
         self.color_passive = pg.Color('chartreuse4')
         self.active = False
-        self.text_list = [("t1", 150, "Click to Play!", "white", "click"),
-                          ("t2", 150,
-                           f"Total Players Connected: {len(self.s.connected_players)}",
-                           "white", "total_players")]
+        self.serverFail = False
+        self.nameFail = False
+        self.text_list = [("t1", 100, "Player Name:", "white", "pname"),
+                          ("t2", 100, "Please Choose a Player Name!", "white", "pname"),
+                          ("t3", 100, "You must run the server to play!", "white", "pserver")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back'),
-                         ("b2", 150, (255, 255, 255), 'Connect'),
-                         ("b3", 150, (255, 255, 255),
-                          f'Player Count: {self.s.pnum}')]
+                         ("b2", 150, (255, 255, 255), 'Connect')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -66,27 +64,16 @@ class WaitingRoom:
                         self.gameboard.move_player(p1, p2, p3, p4, 'UP')
                     elif event.key == pg.K_DOWN:
                         self.gameboard.move_player(p1, p2, p3, p4, 'DOWN')
-                if self.active:
-                    if event.key == pg.K_BACKSPACE:
-                        self.user_text = self.user_text[:-1]
-                    else:
-                        self.user_text += event.unicode
             elif event.type == pg.MOUSEBUTTONUP:
-                self.gameboard.check_gameboard_events()
-            elif event.type == pg.MOUSEBUTTONDOWN:
-                if self.input_rect.collidepoint(event.pos):
-                    print("Active is True")
-                    self.active = True
-                else:
-                    print("Active is False")
-                    self.active = False
+                self.gameboard.check_gameboard_events(p1, p2, p3, p4)
 
     def draw_window(self, p1, p2, p3, p4):
         self.connected = True
         self.screen.fill(color=PLAY_COLOR)
+        self.gameboard.set_player_name(p1)
         self.gameboard.draw(p1, p2, p3, p4)
-        pg.display.flip()
         self.check_events(p1, p2, p3, p4)
+        pg.display.flip()
 
     def set_button_position(self, button_name, x, y):
         """
@@ -103,10 +90,13 @@ class WaitingRoom:
             text = getattr(self, i[0])
             if i[0] == "t1":
                 text.draw(self.screen, 1, 0)
-            elif i[0] == "t2":
-                text.update_text(
-                    f"Total Players Connected: {len(self.s.connected_players)}")
-                text.draw(self.screen, 1, 1)
+            else:
+                if i[0] == "t2" and self.nameFail == True:
+                    text.draw(self.screen, 1, 1)
+                elif i[0] == "t3" and self.serverFail == True:
+                    text.draw(self.screen, 1, 1)
+                else:
+                    pass
 
         for i in self.btn_list:
             button = getattr(self, i[0])
@@ -120,24 +110,34 @@ class WaitingRoom:
         pg.draw.rect(self.screen, color, self.input_rect)
         self.text_surface = self.base_font.render(self.user_text, True, (255, 255, 255))
         self.screen.blit(self.text_surface, (self.input_rect.x + 5, self.input_rect.y + 5))
-        self.input_rect.w = max(100, self.text_surface.get_width() + 10)
+        self.input_rect.w = max(200, self.text_surface.get_width() + 10)
         
         self.set_button_position("b1", 50, 50)
-        self.set_button_position("b2", self.center_x - 50, self.center_y + 150)
-        self.set_button_position("b3", self.center_x - 50, self.center_y - 200)
+        self.set_button_position("b2", self.center_x - 50, self.center_y - 200)
         pg.display.flip()
 
     def network_connection(self):
-        running = True
-        n = Network(self)
-        p1 = n.getP()
+        if self.user_text == '':
+            self.nameFail = True
+            self.allowUpdate = False
+        else:
+            self.nameFail = False
+            running = True
+            n = Network(self)
+            p1 = n.getP()
 
-        while running:
-            p2 = n.send(p1)
-            p3 = n.send(p2)
-            p4 = n.send(p3)
+            if p1 == None:
+                running = False
+                self.allowUpdate = False
+                self.serverFail = True
+            else:
+                self.serverFail = False
+                while running:
+                    p2 = n.send(p1)
+                    p3 = n.send(p2)
+                    p4 = n.send(p3)
 
-            self.draw_window(p1, p2, p3, p4)
+                    self.draw_window(p1, p2, p3, p4)
 
     def update(self):
         if self.allowUpdate == True:
@@ -164,7 +164,3 @@ class WaitingRoom:
                 elif i[0] == 'b2':
                     print("Connecting!")
                     self.allowUpdate = True
-                elif i[0] == 'b3':
-                    self.s.configure_player_count()
-                    button.update_text(f'Player Count: {self.s.pnum}')
-                    print(f"Player Count is now: {self.s.pnum}")

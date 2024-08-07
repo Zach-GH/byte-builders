@@ -8,12 +8,15 @@ Add module docstring here
 from settings import pg, CELL_SIZE, GRID_COLS, GRID_ROWS
 
 class Player:
-    def __init__(self, start_pos, color, name):
+    def __init__(self, start_pos, color, name, id):
         self.pos = start_pos
+        self.past_pos = start_pos
         self.color = color
         self.name = name
         self.size = CELL_SIZE
-
+        self.id = id
+        self.configured = False
+        
     def render_text_to_circle(self, screen, text, font_size, text_color,
                               center):
         font = pg.font.Font(None, font_size)
@@ -30,15 +33,46 @@ class Player:
             y_offset += text_surface.get_height()
 
     def move(self, direction):
+        self.past_pos = self.pos
+
         if direction == 'LEFT':
             pos = (self.pos[0], max(self.pos[1] - 1, 0))
+            if self.past_pos == (8, 0) and self.pos == (8, 0):
+                pos = (max(self.pos[0] - 1, 0), self.pos[1])
+                direction = 'UP'
+            elif self.past_pos == (0, 0) and self.pos == (0, 0):
+                pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
+                direction = 'DOWN'
+
         elif direction == 'RIGHT':
             pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+            if self.past_pos == (8, 8) and self.pos == (8, 8):
+                pos = (max(self.pos[0] - 1, 0), self.pos[1])
+                direction = 'UP'
+            elif self.past_pos == (0, 8) and self.pos == (0, 8):
+                pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
+                direction = 'DOWN'
+
         elif direction == 'UP':
             pos = (max(self.pos[0] - 1, 0), self.pos[1])
+            if self.past_pos == (0, 8) and self.pos == (0, 8):
+                pos = (self.pos[0], max(self.pos[1] - 1, 0))
+                direction = 'LEFT'
+            elif self.past_pos == (0, 0) and self.pos == (0, 0):
+                pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+                direction = 'RIGHT'
+
         elif direction == 'DOWN':
             pos = (min(self.pos[0] + 1, GRID_ROWS - 1), self.pos[1])
-        
+            if self.past_pos == (8, 8) and self.pos == (8, 8):
+                pos = (self.pos[0], max(self.pos[1] - 1, 0))
+                direction = 'LEFT'
+            elif self.past_pos == (8, 0) and self.pos == (8, 0):
+                pos = (self.pos[0], min(self.pos[1] + 1, GRID_COLS - 1))
+                direction = 'RIGHT'
+        else:
+            print("Don't have a valid direction to move")
+
         if ( # top left and top right
             pos == (1, 1) or pos == (1, 2)
             or pos == (1, 3) or pos == (1, 5)
@@ -62,6 +96,18 @@ class Player:
             print("Player can't move here!", pos)
         else:
             self.pos = pos
+            if self.pos == (4, 4):
+                direction = 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+            elif self.pos == (0, 4):
+                direction = 'CHOOSE_DOWN_LEFT_RIGHT'
+            elif self.pos == (8, 4):
+                direction = 'CHOOSE_UP_LEFT_RIGHT'
+            elif self.pos == (4, 0):
+                direction = 'CHOOSE_UP_DOWN_RIGHT'
+            elif self.pos == (4, 8):
+                direction = 'CHOOSE_UP_DOWN_LEFT'
+            print("Pos is", pos)
+            return direction
 
     def draw(self, screen, center_x, center_y):
 
@@ -75,7 +121,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("black"),
                                        (x, y))
         elif self.color == (0, 255, 0): # green
             # position of the player
@@ -85,7 +131,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("black"),
                                        (x, y))
         elif self.color == (255, 0, 0): # red
             # position of the player
@@ -95,7 +141,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("white"),
                                        (x, y))
         elif self.color == (0, 0, 255): # blue
             # position of the player
@@ -105,8 +151,26 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("white"),
                                        (x, y))
 
     def get_position(self):
         return self.pos
+
+    def get_name(self):
+        return self.name
+
+    def set_name(self, name):
+        self.name = name
+
+    def get_id(self):
+        return self.id
+
+    def get_configured(self):
+        return self.configured
+
+    def set_configured(self):
+        self.configured = True
+
+    def get_color(self):
+        return self.color
