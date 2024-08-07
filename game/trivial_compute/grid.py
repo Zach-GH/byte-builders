@@ -12,9 +12,11 @@ class Grid:
     """
     Grid class to handle the grid.
     """
+
     def __init__(self, app):
         self.app = app
         self.screen = self.app.screen
+        self.dice = self.app.dice
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
@@ -52,7 +54,13 @@ class Grid:
         pass
 
     def roll_again_action(self):
-        print("Roll Again!")
+        # There needs to be logic put here so that this only happens
+        # When it is the final tile that a player lands on after movement
+        # Otherwise, it will roll the dice whenever the player moves over the tile
+        self.dice.roll_dice()
+        self.dice.was_clicked()
+        self.dice.draw_dice(self.get_right() + 50, self.get_top() + 5, 100)
+        pg.display.flip()
 
     def hq_action(self):
         print("HQ!")
