@@ -39,8 +39,8 @@ MPATH = os.path.join("assets", "sounds",
 MENU_MUSIC= os.path.realpath(MPATH)
 
 # https://opengameart.org/content/menu-selection-click
-CPATH = os.path.join("assets", "sounds", "Click.wav")
-CLICK= os.path.realpath(CPATH)
+# CPATH = os.path.join("assets", "sounds", "Click.wav")
+# CLICK= os.path.realpath("assets/sounds/Click.wav")
 
 # https://pixabay.com/sound-effects/dice-142528/
 CPATH = os.path.join("assets", "sounds", "Dice.mp3")

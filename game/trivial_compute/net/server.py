@@ -17,7 +17,7 @@ class Server:
         self.app = app
         self.server = self.get_local_ip()
         self.port = 5555
-        self.pnum = 1 # player num change to whatever
+        self.pnum = 4 # player num change to whatever
         self.connected_players = []
 
     def get_local_ip(self):

@@ -59,7 +59,7 @@ class Question_Gui:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
-                button.was_clicked()
+                # button.was_clicked()
                 # Needs to call for an answer instead
                 question_id = self.next_id
                 result = run_sql_query(self.question_type)

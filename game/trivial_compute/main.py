@@ -105,7 +105,7 @@ class Game:
             for i in self.nav['menu'].btn_list:
                 button = getattr(self.nav['menu'], i[0])
                 if button.is_clicked(pos):
-                    button.was_clicked()
+                    # button.was_clicked()
                     if i[3] == "Play":
                         self.display = "waitingroom"
                     elif i[3] == "Options":

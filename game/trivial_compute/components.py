@@ -5,7 +5,7 @@ components.py
 Add module docstring here
 """
 
-from settings import pg, ft, FONT_PATH, CLICK, BOOK
+from settings import pg, ft, FONT_PATH, BOOK
 from beats import Sound_Effect
 
 class Text:
@@ -55,7 +55,7 @@ class Button:
         self.font = pg.font.Font(pg.font.get_default_font(), self.size[1])
         self.rect = pg.Rect(self.pos, self.size)
         self.area = pg.Surface(self.rect.size)
-        self.click_sound = Sound_Effect(self, CLICK)
+        # self.click_sound = Sound_Effect(self, CLICK)
         self.book_sound = Sound_Effect(self, BOOK)
 
     def render(self, text, text_color):

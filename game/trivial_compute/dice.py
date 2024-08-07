@@ -83,7 +83,7 @@ class Dice:
 
     def was_clicked(self):
         """
-        If the button was clicked, play the CLICK sound effect.
+        If the button was clicked, play the Dice sound effect.
         """
         self.dice_sound.play()
 

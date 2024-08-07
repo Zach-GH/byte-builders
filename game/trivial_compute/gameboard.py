@@ -240,7 +240,7 @@ class GameBoard:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
-                button.was_clicked()
+                # # button.was_clicked()
                 if i[0] == "b1":
                     self.help = True
                 # Keyi ==========
@@ -281,7 +281,7 @@ class GameBoard:
         for i in self.move_btns:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
-                button.was_clicked()
+                # # button.was_clicked()
                 if i[0] == "m1":
                     move_num = self.dice.get_num()
                     self.direction = 'UP'

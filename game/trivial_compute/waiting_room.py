@@ -158,7 +158,7 @@ class WaitingRoom:
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
-                button.was_clicked()
+                # button.was_clicked()
                 if i[0] == 'b1':
                     self.app.display = "menu"
                 elif i[0] == 'b2':
