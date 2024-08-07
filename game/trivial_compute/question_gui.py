@@ -13,18 +13,18 @@ from run_sql_query import run_sql_query
 resolution = QGUI_RES
 res_type = pg.RESIZABLE
 
-def run_question_gui_instance():
+def run_question_gui_instance(question_type):
     pg.init()
     screen = pg.display.set_mode(resolution, res_type)
     pg.display.set_caption('Byte-Builders Question GUI')
-    question_gui = Question_Gui(screen)
+    question_gui = Question_Gui(screen, question_type)
     question_gui.run()
 
 class Question_Gui:
     """
     Question_Gui class to handle the question_gui UI and interactions.
     """
-    def __init__(self, screen=None):
+    def __init__(self, screen=None, question=None):
         pg.init()
         pg.display.set_caption('Byte-Builders Question GUI')
         self.screen = screen or pg.display.set_mode(resolution, res_type)
@@ -32,11 +32,11 @@ class Question_Gui:
         self.clock = pg.time.Clock()
         self.current_question = {}
         self.next_id = 1
+        self.question_type = question
+        self.show_answer = False
         self.text_list = [("t1", 125, "Question_Gui", "white", "title"),
                           ("t2", 60, "?", "white", "question")]
-        self.btn_list = [("b1", 0, (255, 255, 255), 'Science'),
-                         ("b2", 0, (255, 255, 255), 'History'),
-                         ("b3", 0, (255, 255, 255), 'Geography')]
+        self.btn_list = [("b1", 0, (255, 255, 255), 'Reveal')]
 
         for i in self.btn_list:
             setattr(self, i[0], Button(self, ((self.x / 2 - BTN_W_LOC),
@@ -60,9 +60,9 @@ class Question_Gui:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
                 button.was_clicked()
-                # Call for database question
+                # Needs to call for an answer instead
                 question_id = self.next_id
-                result = run_sql_query(i[3])
+                result = run_sql_query(self.question_type)
                 for question, answer in result:
                     self.current_question[question_id] = (question, answer)
                 first_question = 1
@@ -70,8 +70,10 @@ class Question_Gui:
                 for i in self.text_list:
                     text = getattr(self, i[0])
                     if i[0] == "t2":
-                        text.update_text(f"{first_question[0]}")
-                        text.draw(self.screen, 0, 1.5)
+                        if self.show_answer == False:
+                            self.show_answer = True
+                        else:
+                            self.show_answer = False
 
     def check_events(self):
         """
@@ -110,9 +112,25 @@ class Question_Gui:
             button = getattr(self, i[0])
             button.draw(self.screen, i[2])
 
-        self.set_button_position("b1", 100, 150)
-        self.set_button_position("b2", 265, 150)
-        self.set_button_position("b3", 450, 150)
+        self.set_button_position("b1", 265, 150)
+
+        # Call for database question
+        question_id = self.next_id
+        result = run_sql_query(self.question_type)
+        for question, answer in result:
+            self.current_question[question_id] = (question, answer)
+        first_question = 1
+        first_question = self.current_question.get(first_question, None)
+        for i in self.text_list:
+            text = getattr(self, i[0])
+            if i[0] == "t2":
+                if self.show_answer == True:
+                    text.update_text(f"{first_question[1]}")
+                    text.draw(self.screen, 0, 1.5)
+                else:
+                    text.update_text(f"{first_question[0]}")
+                    text.draw(self.screen, 0, 1.5)
+
         pg.display.flip()
 
     def update(self):

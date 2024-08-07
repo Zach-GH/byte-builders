@@ -18,6 +18,13 @@ class Grid:
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
+        # Store the current state of each player's attributes
+        self.pStates = {
+            1: {"color": None, "name": None, "pos": None},
+            2: {"color": None, "name": None, "pos": None},
+            3: {"color": None, "name": None, "pos": None},
+            4: {"color": None, "name": None, "pos": None}
+        }
         self.text_list = [("t1", 25, "Game", "white", "title"),
                           ("t2", 25, "Roll\nAgain", "white", "ra1"),
                           ("t3", 25, "Roll\nAgain", "white", "ra2"),
@@ -54,8 +61,43 @@ class Grid:
     def roll_again_action(self):
         print("Roll Again!")
 
-    def hq_action(self):
-        print("HQ!")
+    def hq_action(self, color):
+        if color == (255, 255, 0):
+            if self.app.history_color == "yellow":
+                self.app.app.app.app.run_question_gui("history")
+            elif self.app.science_color == "yellow":
+                self.app.app.app.app.run_question_gui("science")
+            elif self.app.geography_color == "yellow":
+                self.app.app.app.app.run_question_gui("geography")
+            elif self.app.math_color == "yellow":
+                self.app.app.app.app.run_question_gui("math")
+        elif color == (255, 0, 0):
+            if self.app.history_color == "red":
+                self.app.app.app.app.run_question_gui("History")
+            elif self.app.science_color == "red":
+                self.app.app.app.app.run_question_gui("Science")
+            elif self.app.geography_color == "red":
+                self.app.app.app.app.run_question_gui("Geography")
+            elif self.app.math_color == "red":
+                self.app.app.app.app.run_question_gui("Math")
+        elif color == (0, 0, 255):
+            if self.app.history_color == "blue":
+                self.app.app.app.app.run_question_gui("History")
+            elif self.app.science_color == "blue":
+                self.app.app.app.app.run_question_gui("Science")
+            elif self.app.geography_color == "blue":
+                self.app.app.app.app.run_question_gui("Geography")
+            elif self.app.math_color == "blue":
+                self.app.app.app.app.run_question_gui("Math")
+        elif color == (0, 255, 0):
+            if self.app.history_color == "green":
+                self.app.app.app.app.run_question_gui("History")
+            elif self.app.science_color == "green":
+                self.app.app.app.app.run_question_gui("Science")
+            elif self.app.geography_color == "green":
+                self.app.app.app.app.run_question_gui("Geography")
+            elif self.app.math_color == "green":
+                self.app.app.app.app.run_question_gui("Math")
 
     def trivial_compute_action(self):
         print("Trivial Compute!")
@@ -75,13 +117,13 @@ class Grid:
                 }
                 if ((row == 0 and col == 0) or (row == 0 and col == 8)
                     or (row == 8 and col == 0) or (row == 8 and col == 8)):
-                    cell['color'] = (255, 255, 255) # White
+                    cell['color'] = (255, 255, 255)  # White
                     cell['text'] = "Roll\nAgain"
                     cell['text_color'] = "Black"
                     cell['action'] = self.roll_again_action
                     cell['special'] = True
                 elif (row == 4 and col == 4):
-                    cell['color'] = (255, 255, 255) # White
+                    cell['color'] = (255, 255, 255)  # White
                     cell['text'] = "Trivial\nCompute"
                     cell['text_color'] = "Black"
                     cell['action'] = self.trivial_compute_action
@@ -91,55 +133,83 @@ class Grid:
                       or (row == 4 and col == 6) or (row == 5 and col == 4)
                       or (row == 6 and col == 8) or (row == 8 and col == 1)
                       or (row == 8 and col == 5)):
-                    cell['color'] = (255, 255, 0) # Yellow
+                    cell['color'] = (255, 255, 0)  # Yellow
                 elif (row == 4 and col == 0):
-                    cell['color'] = (255, 255, 0) # Yellow
+                    cell['color'] = (255, 255, 0)  # Yellow
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
-                    cell['action'] = self.hq_action
+                    cell['action'] = lambda: self.hq_action((255, 255, 0))
                     cell['special'] = True
                 elif ((row == 0 and col == 3) or (row == 0 and col == 7)
                       or (row == 2 and col == 0) or (row == 3 and col == 4)
                       or (row == 4 and col == 2) or (row == 6 and col == 0)
                       or (row == 7 and col == 4) or (row == 8 and col == 3)
                       or (row == 8 and col == 7)):
-                    cell['color'] = (0, 255, 0) # Green
+                    cell['color'] = (0, 255, 0)  # Green
                 elif (row == 4 and col == 8):
-                    cell['color'] = (0, 255, 0) # Green
+                    cell['color'] = (0, 255, 0)  # Green
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
-                    cell['action'] = self.hq_action
+                    cell['action'] = lambda: self.hq_action((0, 255, 0))
                     cell['special'] = True
                 elif ((row == 1 and col == 0) or (row == 1 and col == 8)
                       or (row == 4 and col == 3) or (row == 4 and col == 7)
                       or (row == 5 and col == 0) or (row == 5 and col == 8)
                       or (row == 6 and col == 4) or (row == 8 and col == 2)
                       or (row == 8 and col == 6)):
-                    cell['color'] = (255, 0, 0) # Red
+                    cell['color'] = (255, 0, 0)  # Red
                 elif (row == 0 and col == 4):
-                    cell['color'] = (255, 0, 0) # Red
+                    cell['color'] = (255, 0, 0)  # Red
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
-                    cell['action'] = self.hq_action
+                    cell['action'] = lambda: self.hq_action((255, 0, 0))
                     cell['special'] = True
                 elif ((row == 0 and col == 2) or (row == 0 and col == 6)
                       or (row == 2 and col == 4) or (row == 3 and col == 0)
                       or (row == 3 and col == 8) or (row == 4 and col == 1)
                       or (row == 4 and col == 5) or (row == 7 and col == 0)
                       or (row == 7 and col == 8)):
-                    cell['color'] = (0, 0, 255) # Blue
+                    cell['color'] = (0, 0, 255)  # Blue
                 elif (row == 8 and col == 4):
-                    cell['color'] = (0, 0, 255) # Blue
+                    cell['color'] = (0, 0, 255)  # Blue
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
-                    cell['action'] = self.hq_action
+                    cell['action'] = lambda: self.hq_action((0, 0, 255))
                     cell['special'] = True
                 else:
-                    pass
+                    cell['action'] = self.move_action  # Set to a safe callable
+    
                 row_list.append(cell)
             self.grid.append(row_list)
 
-    def draw_large_overlay(self, cell_ids):
+
+    def draw_overlay(self, rect, color):
+        """
+        Draw an overlay on the specified rect.
+        """
+        # Example: Draw a semi-transparent overlay
+        if color == (255, 255, 0): # yellow
+            overlay_color = (150, 150, 0, 50)
+        elif color == (0, 255, 0): # green
+            overlay_color = (0, 150, 0, 50)
+        elif color == (255, 0, 0): # red
+            overlay_color = (150, 0, 0, 50)
+        elif color == (0, 0, 255): # blue
+            overlay_color = (0, 0, 150, 50)
+        else:
+            overlay_color = (255, 255, 255, 50)
+
+        overlay_surface = pg.Surface((rect.width, rect.height))
+        overlay_surface.fill(overlay_color)
+        self.screen.blit(overlay_surface, rect.topleft)
+
+        # Example: Draw some text on the overlay
+        font = pg.font.Font(None, 30)
+        overlay_text = font.render("Overlay", True, (255, 255, 255))
+        text_rect = overlay_text.get_rect(center=rect.center)
+        self.screen.blit(overlay_text, text_rect.topleft)
+
+    def draw_large_overlay(self, cell_ids, color, name):
         """
         Draw a large overlay covering multiple cells specified by cell_ids.
         """
@@ -157,27 +227,51 @@ class Grid:
         bounding_rect = pg.Rect(min_x, min_y, max_x - min_x, max_y - min_y)
 
         # Example: Draw a semi-transparent overlay
-        overlay_color = (0, 0, 0, 128)  # RGBA: Black with 50% transparency
-        overlay_surface = pg.Surface((bounding_rect.width, bounding_rect.height), pg.SRCALPHA)
+        if color == (255, 255, 0): # yellow
+            overlay_color = (200, 200, 0, 128)
+        elif color == (0, 255, 0): # green
+            overlay_color = (0, 200, 0, 128)
+        elif color == (255, 0, 0): # red
+            overlay_color = (200, 0, 0, 128)
+        elif color == (0, 0, 255): # blue
+            overlay_color = (0, 0, 200, 128)
+        else:
+            overlay_color = (255, 255, 255, 50)
+
+        font = pg.font.Font(None, 30)
+        # Draw some text on the overlay
+        overlay_text = font.render(name, True, (255, 255, 255))
+
+        overlay_surface = pg.Surface((bounding_rect.width,
+                                      bounding_rect.height))
         overlay_surface.fill(overlay_color)
         self.screen.blit(overlay_surface, bounding_rect.topleft)
 
-        # Example: Draw some text on the overlay
-        font = pg.font.Font(None, 30)
-        overlay_text = font.render("Overlay", True, (255, 255, 255))
         text_rect = overlay_text.get_rect(center=bounding_rect.center)
+
         self.screen.blit(overlay_text, text_rect.topleft)
 
-    def draw_grid(self, p1, p2, p3, p4):
+    def draw_grid(self, p1, p2=None, p3=None, p4=None):
         """
         Draw the game grid.
         """
 
         white_cells = [
-            ["1-1", "1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3"],  # Top-left box
-            ["1-5", "1-6", "1-7", "2-5", "2-6", "2-7", "3-5", "3-6", "3-7"],  # Top-right box
-            ["5-1", "5-2", "5-3", "6-1", "6-2", "6-3", "7-1", "7-2", "7-3"],  # Bottom-left box
-            ["5-5", "5-6", "5-7", "6-5", "6-6", "6-7", "7-5", "7-6", "7-7"]   # Bottom-right box
+            # Top-left box
+            ["1-1", "1-2", "1-3", "2-1", "2-2", "2-3", "3-1", "3-2", "3-3"],
+            # Top-right box
+            ["1-5", "1-6", "1-7", "2-5", "2-6", "2-7", "3-5", "3-6", "3-7"],
+            # Bottom-left box
+            ["5-1", "5-2", "5-3", "6-1", "6-2", "6-3", "7-1", "7-2", "7-3"],
+            # Bottom-right box
+            ["5-5", "5-6", "5-7", "6-5", "6-6", "6-7", "7-5", "7-6", "7-7"]
+        ]
+
+        multi_cells = [
+            "1-1", "1-3", "1-5", "1-7",  # Top-left box
+            "3-1", "3-3", "3-5", "3-7",  # Top-right box
+            "5-1", "5-3", "5-5", "5-7",  # Bottom-left box
+            "7-1", "7-3", "7-5", "7-7"   # Bottom-right box
         ]
 
         for row in self.grid:
@@ -189,13 +283,86 @@ class Grid:
                     self.render_text_to_rect(cell['text'], 30,
                                              cell['text_color'], cell['rect'])
 
-        for cell in white_cells:
-            self.draw_large_overlay(cell)
+        players = [p1, p2, p3, p4]
+        for p in players:
+            p_id = p.get_id()
+            new_color = p.get_color()
+            new_name = p.get_name()
+            new_pos = p.get_position()
 
-        p1.draw(self.screen, self.center_x, self.center_y)
-        p2.draw(self.screen, self.center_x, self.center_y)
-        p3.draw(self.screen, self.center_x, self.center_y)
-        p4.draw(self.screen, self.center_x, self.center_y)
+            if p_id not in self.pStates:
+                self.pStates[p_id] = {"color": new_color, "name": new_name, "pos": new_pos}
+            else:
+                if (self.pStates[p_id]["color"] != new_color or
+                    self.pStates[p_id]["name"] != new_name or
+                    self.pStates[p_id]["pos"] != new_pos):
+                    self.pStates[p_id] = {"color": new_color, "name": new_name, "pos": new_pos}
+
+    # Draw overlays for each player state
+        for i, cell_group in enumerate(white_cells):
+            if i == 0:
+                self.draw_large_overlay(cell_group, self.pStates[1]["color"], self.pStates[1]["name"])
+            elif i == 1 and 2 in self.pStates:
+                self.draw_large_overlay(cell_group, self.pStates[2]["color"], self.pStates[2]["name"])
+            elif i == 2 and 3 in self.pStates:
+                self.draw_large_overlay(cell_group, self.pStates[3]["color"], self.pStates[3]["name"])
+            elif i == 3 and 4 in self.pStates:
+                self.draw_large_overlay(cell_group, self.pStates[4]["color"], self.pStates[4]["name"])
+
+                for row in self.grid:
+                    for cell in row:
+                        if cell['id'] in multi_cells:
+                                if cell['id'] == "1-1":
+                                    color = (255, 0, 0) # red
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "1-3":
+                                    color = (255, 255, 0) # yellow
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "3-1":
+                                    color = (0, 255, 0) # green
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "3-3":
+                                    color = (0, 0, 255) # blue
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "1-5":
+                                    color = (255, 0, 0) # red
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "1-7":
+                                    color = (255, 255, 0) # yellow
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "3-5":
+                                    color = (0, 255, 0) # green
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "3-7":
+                                    color = (0, 0, 255) # blue
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "5-1":
+                                    color = (255, 0, 0) # red
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "5-3":
+                                    color = (255, 255, 0) # yellow
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "7-1":
+                                    color = (0, 255, 0) # green
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "7-3":
+                                    color = (0, 0, 255) # blue
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "5-5":
+                                    color = (255, 0, 0) # red
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "5-7":
+                                    color = (255, 255, 0) # yellow
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "7-5":
+                                    color = (0, 255, 0) # green
+                                    self.draw_overlay(cell['rect'], color)
+                                elif cell['id'] == "7-7":
+                                    color = (0, 0, 255) # blue
+                                    self.draw_overlay(cell['rect'], color)
+
+            for player in players:
+                    player.draw(self.screen, self.center_x, self.center_y)
 
     def get_left(self):
         return self.center_x

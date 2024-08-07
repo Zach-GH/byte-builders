@@ -74,6 +74,9 @@ while A < n:
         A += 1
     A += 1
 
+def run_question_gui_process():
+    question = mp.current_process().question
+    run_question_gui_instance(question)
 
 class Game:
     """
@@ -142,7 +145,7 @@ class App:
     def __init__(self):
         pg.init()
         pg.display.set_caption('Byte-Builders Trivial Compute')
-        self.screen = pg.display.set_mode(resolution, res_type)
+        self.screen = pg.display.set_mode(resolution, res_type | pg.DOUBLEBUF)
         self.res = (self.x, self.y) = self.screen.get_size()
         self.clock = pg.time.Clock()
         self.game = Game(self)
@@ -173,23 +176,19 @@ class App:
             self.game.nav['menu'].bg_img = self.game.scale
             self.screen.blit(self.game.nav['menu'].bg_img, (0, 0))
             self.game.nav['menu'].draw()
-            pg.display.flip()
         elif self.game.display == "waitingroom":
             self.screen.fill(color=MENU_COLOR)
             self.game.nav['waitingroom'].draw()
-            pg.display.flip()
         elif self.game.display == "options":
             self.screen.fill(color=OPTIONS_COLOR)
             self.game.nav['options'].draw()
-            pg.display.flip()
         elif self.game.display == "host":
             self.screen.fill(color=HOST_COLOR)
             self.game.nav['host'].draw()
-            pg.display.flip()
         elif self.game.display == "team":
             self.screen.fill(color=TEAM_COLOR)
             self.game.nav['team'].draw()
-            pg.display.flip()
+        pg.display.flip()
 
     def check_events(self):
         """
@@ -220,10 +219,11 @@ class App:
                 self.screen = pg.display.set_mode((event.w, event.h), res_type)
                 self.game.check_resize(event)
 
-    def run_external_gui(self, target, process_attribute):
+    def run_external_gui(self, target, process_attribute, question=None):
         current_process = getattr(self, process_attribute, None)
         if current_process is None or not current_process.is_alive():
             process = mp.Process(target=target)
+            process.question = question
             process.start()
             setattr(self, process_attribute, process)
         else:
@@ -235,11 +235,12 @@ class App:
         """
         self.run_external_gui(self.server.run, 'server_process')
 
-    def run_question_gui(self):
+    def run_question_gui(self, question):
         """
         Add function docstring here.
         """
-        self.run_external_gui(run_question_gui_instance, 'question_gui_process')
+        self.run_external_gui(run_question_gui_process, 'question_gui_process',
+                              question)
 
     def run(self):
         """

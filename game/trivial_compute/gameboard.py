@@ -24,11 +24,11 @@ class GameBoard:
         self.x, self.y = (self.app.x, self.app.y)
         self.center_x = (self.x - (GRID_COLS * CELL_SIZE)) / 2
         self.center_y = (self.y - (GRID_ROWS * CELL_SIZE)) / 2
-        self.grid = Grid(self)
         self.history_color = ""
         self.science_color = ""
         self.geography_color = ""
         self.math_color = ""
+        self.grid = Grid(self)
         self.direction = ""
         self.all_categories =  ["History", "Science", "Geography", "Math"]
         self.phase = "categories"
@@ -48,7 +48,6 @@ class GameBoard:
         self.category_list = []
         self.text_list = [("t1", 150, "Help", "white", "H")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Help'),
-                         ("b2", 150, (255, 255, 255), 'Q'),
                          ("b3", 150, (255, 255, 255), 'Red'),
                          ("b4", 150, (255, 255, 255), 'Yellow'),
                          ("b5", 150, (255, 255, 255), 'Blue'),
@@ -176,7 +175,7 @@ class GameBoard:
             setattr(self, i[0], Text(self, i[1], i[2], i[3]))
 
         for i in self.btn_list:
-            if i[0] != "b1" and i[0] != "b2" and i[0] != "b7":
+            if i[0] != "b1" and i[0] != "b7":
                 button = getattr(self, i[0])
                 button.draw(self.screen, i[2])
 
@@ -195,13 +194,11 @@ class GameBoard:
         """
 
         for i in self.btn_list:
-            if i[0] == "b1" or i[0] == "b2":
+            if i[0] == "b1":
                 button = getattr(self, i[0])
                 button.draw(self.screen, i[2])
 
         self.set_button_position("b1", self.grid_left - 285, self.grid_top)
-        self.set_button_position("b2", self.grid_right + 160,
-                                 self.grid_top + 40)
 
         for i in self.move_btns:
             button = getattr(self, i[0])
@@ -234,8 +231,6 @@ class GameBoard:
                 button.was_clicked()
                 if i[0] == "b1":
                     self.help = True
-                elif i[0] == "b2":
-                    self.app.app.app.run_question_gui()
                 # Keyi ==========
                 # TODO: handle case user select same color
                 elif i[0] in ["b3", "b4", "b5", "b6"]:
@@ -274,7 +269,10 @@ class GameBoard:
                     self.direction = 'UP'
                     for _ in range(move_num):
                         self.move_player(p1, p2, p3, p4, self.direction)
-                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_DOWN_LEFT':
+                        if (self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+                            or 'CHOOSE_UP_LEFT_RIGHT'
+                            or 'CHOOSE_UP_DOWN_RIGHT'
+                            or 'CHOOSE_UP_DOWN_LEFT'):
                             print("Special UP move")
                     print("p1 after", p1.get_position())
                 elif i[0] == "m2":
@@ -284,7 +282,10 @@ class GameBoard:
                     self.direction = 'DOWN'
                     for _ in range(move_num):
                         self.move_player(p1, p2, p3, p4, self.direction)
-                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_DOWN_LEFT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                        if (self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+                            or 'CHOOSE_UP_DOWN_RIGHT'
+                            or 'CHOOSE_UP_DOWN_LEFT'
+                            or 'CHOOSE_DOWN_LEFT_RIGHT'):
                             print("Special DOWN move")
                     print("p1 after", p1.get_position())
                 elif i[0] == "m3":
@@ -294,7 +295,10 @@ class GameBoard:
                     self.direction = 'LEFT'
                     for _ in range(move_num):
                         self.move_player(p1, p2, p3, p4, self.direction)
-                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_LEFT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                        if (self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+                            or 'CHOOSE_UP_DOWN_LEFT'
+                            or 'CHOOSE_UP_LEFT_RIGHT'
+                            or 'CHOOSE_DOWN_LEFT_RIGHT'):
                             print("special LEFT move")
                     print("p1 after", p1.get_position())
                 elif i[0] == "m4":
@@ -304,7 +308,10 @@ class GameBoard:
                     self.direction = 'RIGHT'
                     for _ in range(move_num):
                         self.move_player(p1, p2, p3, p4, self.direction)
-                        if self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT' or 'CHOOSE_UP_DOWN_RIGHT' or 'CHOOSE_UP_LEFT_RIGHT' or 'CHOOSE_DOWN_LEFT_RIGHT':
+                        if (self.direction == 'CHOOSE_UP_DOWN_LEFT_RIGHT'
+                            or 'CHOOSE_UP_DOWN_RIGHT'
+                            or 'CHOOSE_UP_LEFT_RIGHT'
+                            or 'CHOOSE_DOWN_LEFT_RIGHT'):
                             print("Special RIGHT move")
                     print("p1 after", p1.get_position())
 

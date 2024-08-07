@@ -26,10 +26,7 @@ class WaitingRoom:
         self.connected = False
         self.allowUpdate = False
         self.base_font = pg.font.Font(None, 32)
-        if self.dev:
-            self.user_text = ':)'
-        else:
-            self.user_text = ''
+        self.user_text = 'Name'
         self.input_rect = pg.Rect(self.center_x + 200, self.center_y - 390, 140, 32)
         self.color_active = pg.Color('lightskyblue3')
         self.color_passive = pg.Color('chartreuse4')
@@ -38,7 +35,7 @@ class WaitingRoom:
         self.nameFail = False
         self.text_list = [("t1", 100, "Player Name:", "white", "pname"),
                           ("t2", 100, "Please Choose a Player Name!", "white", "pname"),
-                          ("t3", 100, "You must run the server to play!", "white", "pname")]
+                          ("t3", 100, "You must run the server to play!", "white", "pserver")]
         self.btn_list = [("b1", 150, (255, 255, 255), 'Back'),
                          ("b2", 150, (255, 255, 255), 'Connect')]
 
@@ -75,8 +72,8 @@ class WaitingRoom:
         self.screen.fill(color=PLAY_COLOR)
         self.gameboard.set_player_name(p1)
         self.gameboard.draw(p1, p2, p3, p4)
-        pg.display.flip()
         self.check_events(p1, p2, p3, p4)
+        pg.display.flip()
 
     def set_button_position(self, button_name, x, y):
         """

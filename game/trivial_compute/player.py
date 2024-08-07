@@ -16,7 +16,7 @@ class Player:
         self.size = CELL_SIZE
         self.id = id
         self.configured = False
-
+        
     def render_text_to_circle(self, screen, text, font_size, text_color,
                               center):
         font = pg.font.Font(None, font_size)
@@ -121,7 +121,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("black"),
                                        (x, y))
         elif self.color == (0, 255, 0): # green
             # position of the player
@@ -131,7 +131,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("black"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("black"),
                                        (x, y))
         elif self.color == (255, 0, 0): # red
             # position of the player
@@ -141,7 +141,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("white"),
                                        (x, y))
         elif self.color == (0, 0, 255): # blue
             # position of the player
@@ -151,7 +151,7 @@ class Player:
             pg.draw.circle(screen, self.color, (x, y), radius)
             pg.draw.circle(screen, (0, 0, 0), (x, y), radius, 5)
             # Draw player name
-            self.render_text_to_circle(screen, self.name, 30, pg.Color("white"),
+            self.render_text_to_circle(screen, self.name[0], 30, pg.Color("white"),
                                        (x, y))
 
     def get_position(self):
@@ -171,3 +171,6 @@ class Player:
 
     def set_configured(self):
         self.configured = True
+
+    def get_color(self):
+        return self.color
