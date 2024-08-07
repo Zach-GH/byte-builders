@@ -62,7 +62,6 @@ class Question_Gui:
                 button.was_clicked()
                 # Call for database question
                 question_id = self.next_id
-                # Grab category from grid
                 result = run_sql_query(i[3])
                 for question, answer in result:
                     self.current_question[question_id] = (question, answer)

@@ -80,7 +80,6 @@ class Grid:
                                     row * CELL_SIZE + self.center_y,
                                     CELL_SIZE, CELL_SIZE),
                     'special': False
-                    'category': CATEGORIES
                 }
                 if ((row == 0 and col == 0) or (row == 0 and col == 8)
                     or (row == 8 and col == 0) or (row == 8 and col == 8)):
@@ -100,10 +99,8 @@ class Grid:
                       or (row == 4 and col == 6) or (row == 5 and col == 4)
                       or (row == 6 and col == 8) or (row == 8 and col == 1)
                       or (row == 8 and col == 5)):
-                    cell['category'] = cat1
                     cell['color'] = (255, 255, 0) # Yellow
                 elif (row == 4 and col == 0):
-                    cell['category'] = cat1
                     cell['color'] = (255, 255, 0) # Yellow
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
@@ -114,10 +111,8 @@ class Grid:
                       or (row == 4 and col == 2) or (row == 6 and col == 0)
                       or (row == 7 and col == 4) or (row == 8 and col == 3)
                       or (row == 8 and col == 7)):
-                    cell['category'] = cat2
                     cell['color'] = (0, 255, 0) # Green
                 elif (row == 4 and col == 8):
-                    cell['category'] = cat2
                     cell['color'] = (0, 255, 0) # Green
                     cell['text'] = "HQ"
                     cell['text_color'] = "Black"
@@ -128,10 +123,8 @@ class Grid:
                       or (row == 5 and col == 0) or (row == 5 and col == 8)
                       or (row == 6 and col == 4) or (row == 8 and col == 2)
                       or (row == 8 and col == 6)):
-                    cell['category'] = cat3
                     cell['color'] = (255, 0, 0)  # Red
                 elif (row == 0 and col == 4):
-                    cell['category'] = cat3
                     cell['color'] = (255, 0, 0) # Red
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
@@ -142,10 +135,8 @@ class Grid:
                       or (row == 3 and col == 8) or (row == 4 and col == 1)
                       or (row == 4 and col == 5) or (row == 7 and col == 0)
                       or (row == 7 and col == 8)):
-                    cell['category'] = cat4
                     cell['color'] = (0, 0, 255) # Blue
                 elif (row == 8 and col == 4):
-                    cell['category'] = cat4
                     cell['color'] = (0, 0, 255) # Blue
                     cell['text'] = "HQ"
                     cell['text_color'] = "White"
@@ -155,18 +146,6 @@ class Grid:
                     pass
                 row_list.append(cell)
             self.grid.append(row_list)
-
-    def get_left(self):
-        return self.center_x
-
-    def get_right(self):
-        return self.center_x + (GRID_COLS * CELL_SIZE)
-
-    def get_top(self):
-        return self.center_y
-
-    def get_bottom(self):
-        return self.center_y + (GRID_ROWS * CELL_SIZE)
 
     def draw_grid(self, p1, p2, p3, p4):
         """
@@ -209,3 +188,15 @@ class Grid:
         p2.draw(self.screen, self.center_x, self.center_y)
         p3.draw(self.screen, self.center_x, self.center_y)
         p4.draw(self.screen, self.center_x, self.center_y)
+
+    def get_left(self):
+        return self.center_x
+
+    def get_right(self):
+        return self.center_x + (GRID_COLS * CELL_SIZE)
+
+    def get_top(self):
+        return self.center_y
+
+    def get_bottom(self):
+        return self.center_y + (GRID_ROWS * CELL_SIZE)
