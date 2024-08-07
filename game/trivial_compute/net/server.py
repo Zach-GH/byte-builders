@@ -22,8 +22,7 @@ class Server:
         self.connected_players = []
 
     def get_local_ip(self):
-        hostname = socket.gethostname()
-        local_ip = socket.gethostbyname(hostname)
+        local_ip = socket.gethostbyname('localhost')
         return local_ip
 
     def configure_player_count(self):
@@ -74,7 +73,6 @@ class Server:
                         conn.sendall(pickle.dumps(reply))
                         reply = players[3]
                         conn.sendall(pickle.dumps(reply))
-
             except:
                 break
 

@@ -16,13 +16,22 @@ from net.server import Server
 class WaitingRoom:
     def __init__(self, app):
         self.app = app
+        self.dev = self.app.dev
         self.screen = self.app.app.screen
         self.x = self.app.app.x
         self.y = self.app.app.y
+        self.center_x = self.x / 2
+        self.center_y = self.y / 2
         self.gameboard = GameBoard(self)
         self.s = Server(self)
         self.connected = False
         self.allowUpdate = False
+        self.base_font = pg.font.Font(None, 32)
+        self.user_text = ''
+        self.input_rect = pg.Rect(200, 200, 140, 32)
+        self.color_active = pg.Color('lightskyblue3')
+        self.color_passive = pg.Color('chartreuse4')
+        self.active = False
         self.text_list = [("t1", 150, "Click to Play!", "white", "click"),
                           ("t2", 150,
                            f"Total Players Connected: {len(self.s.connected_players)}",
@@ -48,16 +57,29 @@ class WaitingRoom:
                 pg.quit()
                 sys.exit()
             elif (event.type == pg.KEYDOWN):
-                if event.key == pg.K_LEFT:
-                    self.gameboard.move_player(p1, p2, p3, p4, 'LEFT')
-                elif event.key == pg.K_RIGHT:
-                    self.gameboard.move_player(p1, p2, p3, p4, 'RIGHT')
-                elif event.key == pg.K_UP:
-                    self.gameboard.move_player(p1, p2, p3, p4, 'UP')
-                elif event.key == pg.K_DOWN:
-                    self.gameboard.move_player(p1, p2, p3, p4, 'DOWN')
+                if self.dev:
+                    if event.key == pg.K_LEFT:
+                        self.gameboard.move_player(p1, p2, p3, p4, 'LEFT')
+                    elif event.key == pg.K_RIGHT:
+                        self.gameboard.move_player(p1, p2, p3, p4, 'RIGHT')
+                    elif event.key == pg.K_UP:
+                        self.gameboard.move_player(p1, p2, p3, p4, 'UP')
+                    elif event.key == pg.K_DOWN:
+                        self.gameboard.move_player(p1, p2, p3, p4, 'DOWN')
+                if self.active:
+                    if event.key == pg.K_BACKSPACE:
+                        self.user_text = self.user_text[:-1]
+                    else:
+                        self.user_text += event.unicode
             elif event.type == pg.MOUSEBUTTONUP:
                 self.gameboard.check_gameboard_events()
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if self.input_rect.collidepoint(event.pos):
+                    print("Active is True")
+                    self.active = True
+                else:
+                    print("Active is False")
+                    self.active = False
 
     def draw_window(self, p1, p2, p3, p4):
         self.connected = True
@@ -90,9 +112,20 @@ class WaitingRoom:
             button = getattr(self, i[0])
             button.draw(self.screen, i[2])
 
+        if self.active:
+            color = self.color_active
+        else:
+            color = self.color_passive
+        
+        pg.draw.rect(self.screen, color, self.input_rect)
+        self.text_surface = self.base_font.render(self.user_text, True, (255, 255, 255))
+        self.screen.blit(self.text_surface, (self.input_rect.x + 5, self.input_rect.y + 5))
+        self.input_rect.w = max(100, self.text_surface.get_width() + 10)
+        
         self.set_button_position("b1", 50, 50)
-        self.set_button_position("b2", 900, 650)
-        self.set_button_position("b3", 900, 300)
+        self.set_button_position("b2", self.center_x - 50, self.center_y + 150)
+        self.set_button_position("b3", self.center_x - 50, self.center_y - 200)
+        pg.display.flip()
 
     def network_connection(self):
         running = True
