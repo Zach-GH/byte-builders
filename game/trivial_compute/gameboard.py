@@ -28,9 +28,12 @@ class GameBoard:
         self.science_color = ""
         self.geography_color = ""
         self.math_color = ""
+        self.art_color = ""
+        self.lit_color = ""
         self.grid = Grid(self)
         self.direction = ""
-        self.all_categories =  ["History", "Science", "Geography", "Math"]
+        self.all_categories =  ["History", "Science", "Geography",
+                                "Math", "Art", "Literature"]
         self.phase = "categories"
         # KEYI: variables for choosing colors for categories
         # ======
@@ -225,6 +228,15 @@ class GameBoard:
         if self.dice.is_clicked(pos):
             self.dice.roll_dice()
             self.dice.was_clicked()
+
+        for cell_rect in self.grid.special_cells:
+            if cell_rect.collidepoint(pos):
+                for row in self.grid.grid:
+                    for cell in row:
+                        if cell['rect'] == cell_rect:
+                            cell['action']()
+                            break
+
         for i in self.btn_list:
             button = getattr(self, i[0])
             if button.is_clicked(pos):
@@ -250,6 +262,12 @@ class GameBoard:
                         elif category == "Math":
                             self.math_color = selected_color
                             print("math color is", self.math_color)
+                        elif category == "Art":
+                            self.art_color = selected_color
+                            print("art color is", self.art_color)
+                        elif category == "Literature":
+                            self.lit_color = selected_color
+                            print("lit color is", self.lit_color)
                         self.current_category_index += 1
                         if self.current_category_index >= len(self.categories):
                             self.configured = True

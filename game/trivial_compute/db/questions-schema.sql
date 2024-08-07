@@ -22,8 +22,10 @@ INSERT INTO Categories (categoryName) VALUES ('Math');
 INSERT INTO Questions (questionContent, answerContent, categoryID) VALUES
 ('What is the chemical symbol for water?', 'H2O', 1),
 ('Who was the first president of the United States?', 'George Washington', 2),
-('What is the capital of France?', 'Paris', 3);
-('Which prime number is the only even one?', 'The only even prime number is two.', 4);
+('What is the capital of France?', 'Paris', 3),
+('Which prime number is the only even one?', 'The only even prime number is two.', 4),
+('Who wrote the play Romeo and Juliet?', 'William Shakespeare', 5),
+('The study of whales, "Cetology" is the 32nd chapter of which American novel?', 'Moby Dick', 6);
 
 SELECT * FROM Questions;
 
