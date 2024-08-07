@@ -123,7 +123,7 @@ class Grid:
                       or (row == 5 and col == 0) or (row == 5 and col == 8)
                       or (row == 6 and col == 4) or (row == 8 and col == 2)
                       or (row == 8 and col == 6)):
-                    cell['color'] = (255, 0, 0)  # Red
+                    cell['color'] = (255, 0, 0) # Red
                 elif (row == 0 and col == 4):
                     cell['color'] = (255, 0, 0) # Red
                     cell['text'] = "HQ"
